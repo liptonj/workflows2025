@@ -1,0 +1,37 @@
+[Unit]
+Description=Bin File Server - Automatically serves .bin files
+After=network.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=binserver
+Group=binserver
+WorkingDirectory=/opt/bin_server
+ExecStart=/opt/bin_server/venv/bin/python -m uvicorn main:app --host 0.0.0.0 --port 80
+Restart=always
+RestartSec=5
+
+# Environment variables
+Environment="BIN_SERVER_HOST=0.0.0.0"
+Environment="BIN_SERVER_PORT=80"
+Environment="BIN_SERVER_DIRECTORY=/opt/bin_server/files"
+Environment="BIN_SERVER_LOG_LEVEL=INFO"
+
+# Security hardening - allow binding to port 80 as non-root
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+CapabilityBoundingSet=CAP_NET_BIND_SERVICE
+NoNewPrivileges=false
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/bin_server/files
+ReadOnlyPaths=/opt/bin_server
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=bin_server
+
+[Install]
+WantedBy=multi-user.target
