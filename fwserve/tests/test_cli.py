@@ -249,11 +249,13 @@ class TestCliCommands:
             (install_dir / "venv").mkdir()
             (install_dir / "main.py").touch()
 
-            with patch("fwserve.cli._is_root", return_value=True), patch(
-                "fwserve.cli._group_exists", return_value=True
-            ), patch("fwserve.cli._user_exists", return_value=True), patch(
-                "fwserve.cli.subprocess.run"
-            ) as mock_run, patch("fwserve.cli.shutil.chown"):
+            with (
+                patch("fwserve.cli._is_root", return_value=True),
+                patch("fwserve.cli._group_exists", return_value=True),
+                patch("fwserve.cli._user_exists", return_value=True),
+                patch("fwserve.cli.subprocess.run") as mock_run,
+                patch("fwserve.cli.shutil.chown"),
+            ):
                 mock_run.return_value = MagicMock(returncode=0)
                 result = runner.invoke(
                     cli,

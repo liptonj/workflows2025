@@ -27,28 +27,20 @@ def sample_bin_file(temp_bin_directory: Path) -> Path:
 def client(temp_bin_directory: Path, sample_bin_file: Path):
     """Create test client with mocked configuration."""
     with patch("fwserve.config.BIN_DIRECTORY", temp_bin_directory):
-        with patch("fwserve.config.SYSLOG_ENABLE_UDP", False), patch(
-            "fwserve.config.SYSLOG_ENABLE_TCP", False
-        ), patch("fwserve.config.SYSLOG_LOG_FILE", temp_bin_directory / "syslog.log"), patch(
-            "fwserve.config.SYSLOG_TAIL_SIZE", 10
-        ), patch(
-            "fwserve.config.SYSLOG_HISTORY_LIMIT", 10
-        ), patch(
-            "fwserve.config.BIN_UPLOAD_MAX_BYTES", 1024 * 1024
-        ), patch(
-            "fwserve.app.config.BIN_DIRECTORY", temp_bin_directory
-        ), patch(
-            "fwserve.app.config.SYSLOG_ENABLE_UDP", False
-        ), patch(
-            "fwserve.app.config.SYSLOG_ENABLE_TCP", False
-        ), patch(
-            "fwserve.app.config.SYSLOG_LOG_FILE", temp_bin_directory / "syslog.log"
-        ), patch(
-            "fwserve.app.config.SYSLOG_TAIL_SIZE", 10
-        ), patch(
-            "fwserve.app.config.SYSLOG_HISTORY_LIMIT", 10
-        ), patch(
-            "fwserve.app.config.BIN_UPLOAD_MAX_BYTES", 1024 * 1024
+        with (
+            patch("fwserve.config.SYSLOG_ENABLE_UDP", False),
+            patch("fwserve.config.SYSLOG_ENABLE_TCP", False),
+            patch("fwserve.config.SYSLOG_LOG_FILE", temp_bin_directory / "syslog.log"),
+            patch("fwserve.config.SYSLOG_TAIL_SIZE", 10),
+            patch("fwserve.config.SYSLOG_HISTORY_LIMIT", 10),
+            patch("fwserve.config.BIN_UPLOAD_MAX_BYTES", 1024 * 1024),
+            patch("fwserve.app.config.BIN_DIRECTORY", temp_bin_directory),
+            patch("fwserve.app.config.SYSLOG_ENABLE_UDP", False),
+            patch("fwserve.app.config.SYSLOG_ENABLE_TCP", False),
+            patch("fwserve.app.config.SYSLOG_LOG_FILE", temp_bin_directory / "syslog.log"),
+            patch("fwserve.app.config.SYSLOG_TAIL_SIZE", 10),
+            patch("fwserve.app.config.SYSLOG_HISTORY_LIMIT", 10),
+            patch("fwserve.app.config.BIN_UPLOAD_MAX_BYTES", 1024 * 1024),
         ):
             # Import after patching to get correct config
             from fwserve.app import app, available_files
@@ -250,9 +242,7 @@ class TestSyslogEndpoints:
         from fwserve.syslog_store import append_syslog_entry
 
         entry = {"host": "test-host", "message": "hello", "severity": 6}
-        asyncio.run(
-            append_syslog_entry({"store": state["syslog_store"], "entry": entry})
-        )
+        asyncio.run(append_syslog_entry({"store": state["syslog_store"], "entry": entry}))
 
         response = client.get("/syslog/history")
         assert response.status_code == 200
