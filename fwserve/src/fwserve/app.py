@@ -185,6 +185,225 @@ app = FastAPI(
 )
 
 
+@app.get("/")
+async def index() -> HTMLResponse:
+    """Render the landing page with links to all features."""
+    html = """
+    <!doctype html>
+    <html>
+      <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>FWServe - Firmware File Server</title>
+        <style>
+          * { box-sizing: border-box; margin: 0; padding: 0; }
+          body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #e0e0e0;
+          }
+          .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+          }
+          header {
+            text-align: center;
+            margin-bottom: 50px;
+          }
+          h1 {
+            font-size: 2.5rem;
+            color: #00d4ff;
+            margin-bottom: 10px;
+          }
+          .subtitle {
+            color: #888;
+            font-size: 1.1rem;
+          }
+          .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+          }
+          .card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 25px;
+            transition: transform 0.2s, box-shadow 0.2s;
+          }
+          .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.2);
+          }
+          .card h2 {
+            color: #00d4ff;
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+          }
+          .card p {
+            color: #aaa;
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+          }
+          .card a {
+            display: inline-block;
+            background: #00d4ff;
+            color: #1a1a2e;
+            padding: 10px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background 0.2s;
+          }
+          .card a:hover {
+            background: #00b8e6;
+          }
+          .api-section {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 25px;
+          }
+          .api-section h2 {
+            color: #00d4ff;
+            margin-bottom: 20px;
+          }
+          .api-table {
+            width: 100%;
+            border-collapse: collapse;
+          }
+          .api-table th, .api-table td {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+          }
+          .api-table th {
+            color: #00d4ff;
+            font-weight: 600;
+          }
+          .api-table code {
+            background: rgba(0, 212, 255, 0.1);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-family: monospace;
+          }
+          .method {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 600;
+          }
+          .method-get { background: #28a745; color: white; }
+          .method-post { background: #007bff; color: white; }
+          .status {
+            margin-top: 30px;
+            text-align: center;
+            color: #666;
+            font-size: 0.9rem;
+          }
+          .status-dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background: #28a745;
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: pulse 2s infinite;
+          }
+          @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <header>
+            <h1>FWServe</h1>
+            <p class="subtitle">Firmware File Server with Syslog Receiver</p>
+          </header>
+
+          <div class="cards">
+            <div class="card">
+              <h2>File Browser</h2>
+              <p>View and download available .bin firmware files.</p>
+              <a href="/files">Browse Files</a>
+            </div>
+
+            <div class="card">
+              <h2>Upload Firmware</h2>
+              <p>Upload new .bin firmware files to the server.</p>
+              <a href="/upload">Upload File</a>
+            </div>
+
+            <div class="card">
+              <h2>Syslog Viewer</h2>
+              <p>Real-time syslog message viewer with filtering.</p>
+              <a href="/syslog">View Logs</a>
+            </div>
+
+            <div class="card">
+              <h2>API Documentation</h2>
+              <p>Interactive API documentation powered by Swagger.</p>
+              <a href="/docs">API Docs</a>
+            </div>
+          </div>
+
+          <div class="api-section">
+            <h2>API Endpoints</h2>
+            <table class="api-table">
+              <tr>
+                <th>Endpoint</th>
+                <th>Method</th>
+                <th>Description</th>
+              </tr>
+              <tr>
+                <td><code>/health</code></td>
+                <td><span class="method method-get">GET</span></td>
+                <td>Health check endpoint</td>
+              </tr>
+              <tr>
+                <td><code>/files</code></td>
+                <td><span class="method method-get">GET</span></td>
+                <td>List available .bin files</td>
+              </tr>
+              <tr>
+                <td><code>/files/{filename}</code></td>
+                <td><span class="method method-get">GET</span></td>
+                <td>Download a specific file</td>
+              </tr>
+              <tr>
+                <td><code>/upload</code></td>
+                <td><span class="method method-post">POST</span></td>
+                <td>Upload a .bin file</td>
+              </tr>
+              <tr>
+                <td><code>/syslog/history</code></td>
+                <td><span class="method method-get">GET</span></td>
+                <td>Get recent syslog entries</td>
+              </tr>
+              <tr>
+                <td><code>/syslog/stream</code></td>
+                <td><span class="method method-get">GET</span></td>
+                <td>SSE stream of syslog messages</td>
+              </tr>
+            </table>
+          </div>
+
+          <div class="status">
+            <span class="status-dot"></span>
+            Server is running
+          </div>
+        </div>
+      </body>
+    </html>
+    """
+    return HTMLResponse(content=html)
+
+
 @app.get("/health")
 async def health_check() -> dict[str, str]:
     """Health check endpoint.

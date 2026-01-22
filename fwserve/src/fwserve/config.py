@@ -17,8 +17,8 @@ BIN_UPLOAD_MAX_BYTES: int = int(os.getenv("FWSERVE_UPLOAD_MAX_BYTES", "104857600
 # Syslog server configuration
 SYSLOG_ENABLE_UDP: bool = os.getenv("SYSLOG_ENABLE_UDP", "true").lower() == "true"
 SYSLOG_ENABLE_TCP: bool = os.getenv("SYSLOG_ENABLE_TCP", "true").lower() == "true"
-SYSLOG_UDP_PORT: int = int(os.getenv("SYSLOG_UDP_PORT", "5514"))
-SYSLOG_TCP_PORT: int = int(os.getenv("SYSLOG_TCP_PORT", "5514"))
+SYSLOG_UDP_PORT: int = int(os.getenv("SYSLOG_UDP_PORT", "514"))
+SYSLOG_TCP_PORT: int = int(os.getenv("SYSLOG_TCP_PORT", "514"))
 SYSLOG_MAX_MESSAGE_BYTES: int = int(os.getenv("SYSLOG_MAX_MESSAGE_BYTES", "8192"))
 
 # Syslog storage configuration

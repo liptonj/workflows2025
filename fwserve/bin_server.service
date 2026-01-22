@@ -22,8 +22,8 @@ Environment="BIN_SERVER_LOG_LEVEL=INFO"
 Environment="BIN_SERVER_MAX_UPLOAD_MB=100"
 
 # Environment variables - Syslog
-Environment="SYSLOG_UDP_PORT=1514"
-Environment="SYSLOG_TCP_PORT=1514"
+Environment="SYSLOG_UDP_PORT=514"
+Environment="SYSLOG_TCP_PORT=514"
 Environment="SYSLOG_FILE=/opt/bin_server/logs/syslog.log"
 Environment="SYSLOG_TAIL_SIZE=1000"
 

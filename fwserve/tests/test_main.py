@@ -52,6 +52,21 @@ def client(temp_bin_directory: Path, sample_bin_file: Path):
                 yield test_client
 
 
+class TestIndexEndpoint:
+    """Tests for the landing page endpoint."""
+
+    def test_index_returns_html(self, client: TestClient) -> None:
+        """Index should return HTML landing page."""
+        response = client.get("/")
+
+        assert response.status_code == 200
+        assert "text/html" in response.headers["content-type"]
+        assert "FWServe" in response.text
+        assert "/upload" in response.text
+        assert "/syslog" in response.text
+        assert "/files" in response.text
+
+
 class TestHealthEndpoint:
     """Tests for the health check endpoint."""
 

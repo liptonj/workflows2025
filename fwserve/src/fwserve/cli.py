@@ -151,10 +151,12 @@ def _detect_existing_installation(install_dir: Path) -> ExistingInstallation:
         )
 
     # Check for legacy install.sh markers
+    # Legacy installs have Python files at the root level (main.py, config.py)
+    # New installs only have venv/, files/, logs/ directories
     legacy_markers = [
-        install_dir / "venv",  # Old virtualenv
         install_dir / "main.py",  # Old main module at root
         install_dir / "config.py",  # Old config at root
+        install_dir / "file_watcher.py",  # Old module at root
     ]
     is_legacy = any(marker.exists() for marker in legacy_markers)
 
@@ -302,7 +304,7 @@ def run(host: str, port: int, directory: str, reload: bool) -> None:
 @click.option("--user", default=DEFAULT_SERVICE_USER, help="Service user")
 @click.option("--group", default=DEFAULT_SERVICE_GROUP, help="Service group")
 @click.option("--port", default=80, type=int, help="HTTP port")
-@click.option("--syslog-port", default=1514, type=int, help="Syslog UDP/TCP port")
+@click.option("--syslog-port", default=514, type=int, help="Syslog UDP/TCP port")
 @click.option("--no-service", is_flag=True, help="Skip systemd service installation")
 @click.option("--force", is_flag=True, help="Force installation even if existing found")
 def install(
@@ -379,15 +381,41 @@ def install(
     files_dir.mkdir(exist_ok=True)
     logs_dir.mkdir(exist_ok=True)
 
-    # Set ownership
+    # Set ownership for install directory
     click.echo("Setting permissions...")
+    shutil.chown(install_path, user=user, group=group)
     shutil.chown(files_dir, user=user, group=group)
     shutil.chown(logs_dir, user=user, group=group)
+    os.chmod(install_path, 0o755)
     os.chmod(files_dir, 0o755)
     os.chmod(logs_dir, 0o755)
 
-    # Find Python executable (handles pipx installations)
-    python_path = _find_fwserve_python()
+    # Create virtual environment in install directory
+    venv_dir = install_path / "venv"
+    if venv_dir.exists():
+        click.echo("Removing existing virtual environment...")
+        shutil.rmtree(venv_dir)
+    click.echo(f"Creating virtual environment in {venv_dir}...")
+    subprocess.run([sys.executable, "-m", "venv", str(venv_dir)], check=True)
+
+    # Install fwserve into the venv
+    venv_pip = venv_dir / "bin" / "pip"
+    click.echo("Installing fwserve into virtual environment...")
+    subprocess.run(
+        [str(venv_pip), "install", "--upgrade", "fwserve"],
+        check=True,
+    )
+
+    # Set ownership for venv
+    shutil.chown(venv_dir, user=user, group=group)
+    for root, dirs, files in os.walk(venv_dir):
+        for d in dirs:
+            shutil.chown(os.path.join(root, d), user=user, group=group)
+        for f in files:
+            shutil.chown(os.path.join(root, f), user=user, group=group)
+
+    # Use the venv Python
+    python_path = str(venv_dir / "bin" / "python")
     click.echo(f"Using Python: {python_path}")
 
     # Install systemd service
