@@ -10,7 +10,7 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import TYPE_CHECKING, Annotated, Any
 
-from fastapi import FastAPI, File, HTTPException, Request, UploadFile
+from fastapi import FastAPI, File, Form, HTTPException, Request, UploadFile
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, StreamingResponse
 
 from fwserve import config
@@ -29,6 +29,10 @@ logger = logging.getLogger(__name__)
 # Track available .bin files
 available_files: dict[str, Path] = {}
 
+# File metadata (MD5 hashes, etc.)
+file_metadata: dict[str, dict[str, str]] = {}
+METADATA_FILE = config.BIN_DIRECTORY / ".file_metadata.json"
+
 # Shared state
 state: dict[str, Any] = {
     "watcher": None,
@@ -38,14 +42,49 @@ state: dict[str, Any] = {
 syslog_subscribers: set[asyncio.Queue[dict[str, object]]] = set()
 
 
+def load_metadata() -> None:
+    """Load file metadata from disk."""
+    global file_metadata  # noqa: PLW0603
+    if METADATA_FILE.exists():
+        try:
+            with METADATA_FILE.open("r") as f:
+                file_metadata = json.load(f)
+            logger.info("Loaded metadata for %d files", len(file_metadata))
+        except (json.JSONDecodeError, OSError) as exc:
+            logger.warning("Failed to load metadata: %s", exc)
+            file_metadata = {}
+    else:
+        file_metadata = {}
+
+
+def save_metadata() -> None:
+    """Save file metadata to disk."""
+    try:
+        with METADATA_FILE.open("w") as f:
+            json.dump(file_metadata, f, indent=2)
+    except OSError as exc:
+        logger.error("Failed to save metadata: %s", exc)
+
+
 def scan_existing_files() -> None:
     """Scan directory for existing .bin files on startup."""
     logger.info("Scanning for existing .bin files in: %s", config.BIN_DIRECTORY)
+
+    # Load metadata first
+    load_metadata()
 
     for file_path in config.BIN_DIRECTORY.glob("*.bin"):
         if file_path.is_file():
             available_files[file_path.name] = file_path
             logger.info("Found existing file: %s", file_path.name)
+
+    # Clean up metadata for files that no longer exist
+    orphaned = [name for name in file_metadata if name not in available_files]
+    for name in orphaned:
+        del file_metadata[name]
+    if orphaned:
+        save_metadata()
+        logger.info("Cleaned up metadata for %d removed files", len(orphaned))
 
     logger.info("Found %d existing .bin files", len(available_files))
 
@@ -110,6 +149,238 @@ async def _handle_syslog_message(payload: dict[str, object]) -> None:
         return
 
     await _broadcast_syslog_entry(parsed)
+
+
+def _get_files_page_html() -> str:
+    """Generate the HTML for the files page with upload and file list."""
+    return """<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Firmware Files - FWServe</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      min-height: 100vh; color: #e0e0e0; padding: 20px;
+    }
+    .container { max-width: 1000px; margin: 0 auto; }
+    header { margin-bottom: 30px; }
+    h1 { color: #00d4ff; margin-bottom: 5px; }
+    .subtitle { color: #888; }
+    .back-link { color: #00d4ff; text-decoration: none; }
+    .back-link:hover { text-decoration: underline; }
+
+    .panel {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px; padding: 25px; margin-bottom: 20px;
+    }
+    .panel h2 { color: #00d4ff; margin-bottom: 15px; font-size: 1.2rem; }
+
+    .upload-form { display: flex; flex-direction: column; gap: 15px; }
+    .form-row { display: flex; gap: 15px; flex-wrap: wrap; }
+    .form-group { flex: 1; min-width: 200px; }
+    .form-group label { display: block; margin-bottom: 5px; color: #aaa; }
+    .form-group input {
+      width: 100%; padding: 10px; border-radius: 6px;
+      border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.3);
+      color: #fff; font-size: 14px;
+    }
+    .form-group input[type="file"] { padding: 8px; }
+    .form-group input::placeholder { color: #666; }
+
+    .upload-btn {
+      background: #00d4ff; color: #1a1a2e; padding: 12px 30px;
+      border: none; border-radius: 6px; font-weight: 600;
+      cursor: pointer; font-size: 16px; align-self: flex-start;
+    }
+    .upload-btn:hover { background: #00b8e6; }
+    .upload-btn:disabled { background: #555; cursor: not-allowed; }
+
+    .progress-container { display: none; margin-top: 15px; }
+    .progress-bar {
+      height: 24px; background: rgba(0,0,0,0.3); border-radius: 12px;
+      overflow: hidden; position: relative;
+    }
+    .progress-fill {
+      height: 100%; background: linear-gradient(90deg, #00d4ff, #00ff88);
+      width: 0%; transition: width 0.2s;
+    }
+    .progress-text {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%); font-size: 12px; font-weight: 600;
+    }
+    .upload-status { margin-top: 10px; font-size: 14px; }
+    .status-success { color: #28a745; }
+    .status-error { color: #dc3545; }
+
+    .file-table { width: 100%; border-collapse: collapse; }
+    .file-table th, .file-table td {
+      text-align: left; padding: 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .file-table th { color: #00d4ff; font-weight: 600; }
+    .file-table td { color: #ccc; }
+    .file-table code {
+      background: rgba(0,212,255,0.1); padding: 2px 6px;
+      border-radius: 4px; font-family: monospace; font-size: 12px;
+    }
+    .file-table a { color: #00d4ff; text-decoration: none; }
+    .file-table a:hover { text-decoration: underline; }
+    .no-files { color: #888; font-style: italic; }
+
+    .size { white-space: nowrap; }
+    .md5 { font-family: monospace; font-size: 11px; color: #888; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <a href="/" class="back-link">&larr; Back to Home</a>
+      <h1>Firmware Files</h1>
+      <p class="subtitle">Upload and manage .bin firmware files</p>
+    </header>
+
+    <div class="panel">
+      <h2>Upload New Firmware</h2>
+      <form class="upload-form" id="uploadForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="file">Firmware File (.bin)</label>
+            <input type="file" id="file" name="file" accept=".bin" required />
+          </div>
+          <div class="form-group">
+            <label for="md5">MD5 Hash (optional)</label>
+            <input type="text" id="md5" name="md5"
+              placeholder="e.g. d41d8cd98f00b204e9800998ecf8427e"
+              pattern="[a-fA-F0-9]{32}" maxlength="32" />
+          </div>
+        </div>
+        <button type="submit" class="upload-btn" id="uploadBtn">Upload</button>
+      </form>
+      <div class="progress-container" id="progressContainer">
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill"></div>
+          <span class="progress-text" id="progressText">0%</span>
+        </div>
+        <div class="upload-status" id="uploadStatus"></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>Available Files</h2>
+      <div id="fileList"><p class="no-files">Loading...</p></div>
+    </div>
+  </div>
+
+  <script>
+    function formatSize(bytes) {
+      if (bytes === 0) return '0 B';
+      const k = 1024;
+      const sizes = ['B', 'KB', 'MB', 'GB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+
+    async function loadFiles() {
+      try {
+        const resp = await fetch('/files');
+        const data = await resp.json();
+        const container = document.getElementById('fileList');
+
+        if (!data.files || data.files.length === 0) {
+          container.innerHTML = '<p class="no-files">No files uploaded yet</p>';
+          return;
+        }
+
+        let html = '<table class="file-table"><tr>';
+        html += '<th>Filename</th><th>Size</th><th>MD5 Hash</th></tr>';
+        for (const f of data.files) {
+          html += '<tr>';
+          html += '<td><a href="/files/' + f.name + '">' + f.name + '</a></td>';
+          html += '<td class="size">' + formatSize(f.size) + '</td>';
+          html += '<td class="md5">' + (f.md5 || '<em>Not provided</em>') + '</td>';
+          html += '</tr>';
+        }
+        html += '</table>';
+        container.innerHTML = html;
+      } catch (e) {
+        document.getElementById('fileList').innerHTML =
+          '<p class="no-files">Error loading files</p>';
+      }
+    }
+
+    document.getElementById('uploadForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const fileInput = document.getElementById('file');
+      const md5Input = document.getElementById('md5');
+      const btn = document.getElementById('uploadBtn');
+      const progress = document.getElementById('progressContainer');
+      const fill = document.getElementById('progressFill');
+      const text = document.getElementById('progressText');
+      const status = document.getElementById('uploadStatus');
+
+      if (!fileInput.files.length) return;
+
+      const formData = new FormData();
+      formData.append('file', fileInput.files[0]);
+      formData.append('md5', md5Input.value.trim());
+
+      btn.disabled = true;
+      progress.style.display = 'block';
+      status.textContent = '';
+      status.className = 'upload-status';
+      fill.style.width = '0%';
+      text.textContent = '0%';
+
+      const xhr = new XMLHttpRequest();
+
+      xhr.upload.addEventListener('progress', function(e) {
+        if (e.lengthComputable) {
+          const pct = Math.round((e.loaded / e.total) * 100);
+          fill.style.width = pct + '%';
+          text.textContent = pct + '% (' + formatSize(e.loaded) +
+            ' / ' + formatSize(e.total) + ')';
+        }
+      });
+
+      xhr.addEventListener('load', function() {
+        btn.disabled = false;
+        if (xhr.status === 200) {
+          status.textContent = 'Upload complete!';
+          status.className = 'upload-status status-success';
+          fileInput.value = '';
+          md5Input.value = '';
+          loadFiles();
+        } else {
+          let msg = 'Upload failed';
+          try {
+            const err = JSON.parse(xhr.responseText);
+            msg = err.detail || msg;
+          } catch (e) {}
+          status.textContent = msg;
+          status.className = 'upload-status status-error';
+        }
+      });
+
+      xhr.addEventListener('error', function() {
+        btn.disabled = false;
+        status.textContent = 'Network error';
+        status.className = 'upload-status status-error';
+      });
+
+      xhr.open('POST', '/upload');
+      xhr.send(formData);
+    });
+
+    loadFiles();
+  </script>
+</body>
+</html>"""
 
 
 @asynccontextmanager
@@ -415,27 +686,41 @@ async def health_check() -> dict[str, str]:
 
 
 @app.get("/files")
-async def list_files() -> dict[str, list[str]]:
-    """List all available .bin files.
+async def list_files() -> dict[str, list[dict[str, Any]]]:
+    """List all available .bin files with metadata.
 
     Returns:
-        List of available file names.
+        List of files with name, size, and md5 hash.
     """
     # Refresh list by checking which files still exist
-    existing_files = []
     files_to_remove = []
+    file_list: list[dict[str, Any]] = []
 
     for filename, filepath in available_files.items():
         if filepath.exists():
-            existing_files.append(filename)
+            stat = filepath.stat()
+            meta = file_metadata.get(filename, {})
+            file_list.append(
+                {
+                    "name": filename,
+                    "size": stat.st_size,
+                    "md5": meta.get("md5", ""),
+                }
+            )
         else:
             files_to_remove.append(filename)
             logger.warning("File no longer exists: %s", filename)
 
     for filename in files_to_remove:
         del available_files[filename]
+        if filename in file_metadata:
+            del file_metadata[filename]
+            save_metadata()
 
-    return {"files": sorted(existing_files)}
+    # Sort by name
+    file_list.sort(key=lambda f: f["name"])
+
+    return {"files": file_list}
 
 
 @app.get("/files/{filename}")
@@ -494,29 +779,16 @@ async def download_file(filename: str, request: Request) -> FileResponse:
 
 @app.get("/upload")
 async def upload_page() -> HTMLResponse:
-    """Render the file upload form page."""
-    html = """
-    <!doctype html>
-    <html>
-      <head>
-        <meta charset="utf-8" />
-        <title>Upload .bin file</title>
-      </head>
-      <body>
-        <h1>Upload .bin file</h1>
-        <form action="/upload" method="post" enctype="multipart/form-data">
-          <input type="file" name="file" accept=".bin" required />
-          <button type="submit">Upload</button>
-        </form>
-      </body>
-    </html>
-    """
-    return HTMLResponse(content=html)
+    """Render the firmware files page with upload and file list."""
+    return HTMLResponse(content=_get_files_page_html())
 
 
 @app.post("/upload")
-async def upload_file(file: Annotated[UploadFile, File()]) -> dict[str, str]:
-    """Handle file upload and store the .bin file."""
+async def upload_file(
+    file: Annotated[UploadFile, File()],
+    md5: Annotated[str, Form()] = "",
+) -> dict[str, str]:
+    """Handle file upload and store the .bin file with optional MD5 hash."""
     if not file.filename:
         raise HTTPException(status_code=400, detail="Filename is required")
 
@@ -530,6 +802,11 @@ async def upload_file(file: Annotated[UploadFile, File()]) -> dict[str, str]:
     destination = config.BIN_DIRECTORY / filename
     if destination.exists():
         raise HTTPException(status_code=409, detail="File already exists")
+
+    # Validate MD5 format if provided
+    md5_clean = md5.strip().lower()
+    if md5_clean and len(md5_clean) != 32:
+        raise HTTPException(status_code=400, detail="Invalid MD5 hash format")
 
     logger.info("Uploading file: %s", filename)
     size = 0
@@ -558,9 +835,16 @@ async def upload_file(file: Annotated[UploadFile, File()]) -> dict[str, str]:
         raise HTTPException(status_code=400, detail="Empty files are not allowed")
 
     available_files[filename] = destination
-    logger.info("Upload complete: %s (%d bytes)", filename, size)
 
-    return {"status": "uploaded", "filename": filename}
+    # Store metadata if MD5 provided
+    if md5_clean:
+        file_metadata[filename] = {"md5": md5_clean}
+        save_metadata()
+        logger.info("Upload complete: %s (%d bytes, md5=%s)", filename, size, md5_clean)
+    else:
+        logger.info("Upload complete: %s (%d bytes)", filename, size)
+
+    return {"status": "uploaded", "filename": filename, "md5": md5_clean}
 
 
 @app.get("/syslog")

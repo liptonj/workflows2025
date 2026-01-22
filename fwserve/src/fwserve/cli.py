@@ -233,7 +233,7 @@ Environment="FWSERVE_LOG_LEVEL=INFO"
 Environment="FWSERVE_TIMEZONE=America/New_York"
 
 # Environment variables - Upload
-Environment="FWSERVE_UPLOAD_MAX_BYTES=104857600"
+Environment="FWSERVE_UPLOAD_MAX_BYTES=10737418240"
 
 # Environment variables - Syslog
 Environment="SYSLOG_ENABLE_UDP=true"

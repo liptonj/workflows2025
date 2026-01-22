@@ -11,8 +11,8 @@ PORT: int = int(os.getenv("FWSERVE_PORT", "8080"))
 # Directory to watch and serve files from
 BIN_DIRECTORY: Path = Path(os.getenv("FWSERVE_DIRECTORY", ".")).resolve()
 
-# Upload configuration
-BIN_UPLOAD_MAX_BYTES: int = int(os.getenv("FWSERVE_UPLOAD_MAX_BYTES", "104857600"))
+# Upload configuration (default 10GB)
+BIN_UPLOAD_MAX_BYTES: int = int(os.getenv("FWSERVE_UPLOAD_MAX_BYTES", "10737418240"))
 
 # Syslog server configuration
 SYSLOG_ENABLE_UDP: bool = os.getenv("SYSLOG_ENABLE_UDP", "true").lower() == "true"

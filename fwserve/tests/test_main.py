@@ -82,18 +82,24 @@ class TestListFilesEndpoint:
     """Tests for the file listing endpoint."""
 
     def test_list_files_returns_available_files(self, client: TestClient) -> None:
-        """List files should return available .bin files."""
+        """List files should return available .bin files with metadata."""
         response = client.get("/files")
 
         assert response.status_code == 200
         data = response.json()
         assert "files" in data
-        assert "test_firmware.bin" in data["files"]
+        # Files are now returned as dicts with name, size, md5
+        file_names = [f["name"] for f in data["files"]]
+        assert "test_firmware.bin" in file_names
+        # Verify structure of file entry
+        test_file = next(f for f in data["files"] if f["name"] == "test_firmware.bin")
+        assert "size" in test_file
+        assert "md5" in test_file
 
     def test_list_files_returns_sorted_list(
         self, client: TestClient, temp_bin_directory: Path
     ) -> None:
-        """Files should be returned in sorted order."""
+        """Files should be returned in sorted order by name."""
         # Create additional files
         from fwserve.app import available_files
 
@@ -105,7 +111,9 @@ class TestListFilesEndpoint:
         response = client.get("/files")
         data = response.json()
 
-        assert data["files"] == sorted(data["files"])
+        # Extract names and verify sorted order
+        file_names = [f["name"] for f in data["files"]]
+        assert file_names == sorted(file_names)
 
 
 class TestDownloadFileEndpoint:
