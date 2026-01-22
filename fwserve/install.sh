@@ -4,6 +4,7 @@ set -e
 
 INSTALL_DIR="/opt/bin_server"
 FILES_DIR="${INSTALL_DIR}/files"
+LOGS_DIR="${INSTALL_DIR}/logs"
 SERVICE_NAME="bin_server"
 SERVICE_USER="binserver"
 SERVICE_GROUP="binserver"
@@ -72,15 +73,19 @@ if [[ "${IS_UPDATE}" == true ]]; then
 fi
 
 # Create installation directory
-echo "Creating installation directory..."
+echo "Creating installation directories..."
 mkdir -p "${INSTALL_DIR}"
 mkdir -p "${FILES_DIR}"
+mkdir -p "${LOGS_DIR}"
 
 # Copy application files
 echo "Copying application files..."
 cp main.py "${INSTALL_DIR}/"
 cp config.py "${INSTALL_DIR}/"
 cp file_watcher.py "${INSTALL_DIR}/"
+cp syslog_parser.py "${INSTALL_DIR}/"
+cp syslog_store.py "${INSTALL_DIR}/"
+cp syslog_server.py "${INSTALL_DIR}/"
 cp pyproject.toml "${INSTALL_DIR}/"
 cp README.md "${INSTALL_DIR}/"
 cp add_file.sh "${INSTALL_DIR}/"
@@ -112,9 +117,13 @@ chmod 755 "${INSTALL_DIR}"/add_file.sh
 # Venv needs to be executable
 chmod -R 755 "${INSTALL_DIR}/venv"
 
-# Files directory owned by service user (for file watching)
+# Files directory owned by service user (for file watching and uploads)
 chown -R "${SERVICE_USER}:${SERVICE_GROUP}" "${FILES_DIR}"
 chmod 755 "${FILES_DIR}"
+
+# Logs directory owned by service user (for syslog storage)
+chown -R "${SERVICE_USER}:${SERVICE_GROUP}" "${LOGS_DIR}"
+chmod 755 "${LOGS_DIR}"
 
 # Install systemd service
 echo "Installing systemd service..."
@@ -150,5 +159,12 @@ echo "To add .bin files:"
 echo "  sudo ${INSTALL_DIR}/add_file.sh /path/to/firmware.bin"
 echo ""
 echo "Or manually place files in: ${FILES_DIR}"
-echo "Server will be available at: http://localhost"
+echo ""
+echo "Server endpoints:"
+echo "  Files API:     http://localhost/files"
+echo "  Upload UI:     http://localhost/upload"
+echo "  Syslog UI:     http://localhost/syslog"
+echo ""
+echo "Syslog server listening on UDP/TCP ports (default 1514)"
+echo "Configure via environment variables in systemd unit file"
 echo ""

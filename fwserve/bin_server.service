@@ -1,5 +1,5 @@
 [Unit]
-Description=Bin File Server - Automatically serves .bin files
+Description=Bin File Server - Serves .bin files with upload UI and syslog receiver
 After=network.target
 Wants=network-online.target
 
@@ -12,11 +12,20 @@ ExecStart=/opt/bin_server/venv/bin/python -m uvicorn main:app --host 0.0.0.0 --p
 Restart=always
 RestartSec=5
 
-# Environment variables
+# Environment variables - Server
 Environment="BIN_SERVER_HOST=0.0.0.0"
 Environment="BIN_SERVER_PORT=80"
 Environment="BIN_SERVER_DIRECTORY=/opt/bin_server/files"
 Environment="BIN_SERVER_LOG_LEVEL=INFO"
+
+# Environment variables - Upload
+Environment="BIN_SERVER_MAX_UPLOAD_MB=100"
+
+# Environment variables - Syslog
+Environment="SYSLOG_UDP_PORT=1514"
+Environment="SYSLOG_TCP_PORT=1514"
+Environment="SYSLOG_FILE=/opt/bin_server/logs/syslog.log"
+Environment="SYSLOG_TAIL_SIZE=1000"
 
 # Security hardening - allow binding to port 80 as non-root
 AmbientCapabilities=CAP_NET_BIND_SERVICE
@@ -25,7 +34,7 @@ NoNewPrivileges=false
 PrivateTmp=true
 ProtectSystem=strict
 ProtectHome=true
-ReadWritePaths=/opt/bin_server/files
+ReadWritePaths=/opt/bin_server/files /opt/bin_server/logs
 ReadOnlyPaths=/opt/bin_server
 
 # Logging

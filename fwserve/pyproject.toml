@@ -1,23 +1,26 @@
 [project]
-name = "bin-server"
+name = "fwserve"
 version = "1.0.0"
-description = "FastAPI web server that automatically serves .bin files"
+description = "FastAPI firmware file server with upload UI and syslog receiver"
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "MIT" }
 authors = [
     { name = "Your Name", email = "you@example.com" }
 ]
-keywords = ["fastapi", "file-server", "bin", "firmware"]
+keywords = ["fastapi", "file-server", "bin", "firmware", "syslog"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Framework :: FastAPI",
     "Intended Audience :: Developers",
+    "Intended Audience :: System Administrators",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Topic :: System :: Logging",
+    "Topic :: Internet :: WWW/HTTP :: HTTP Servers",
 ]
 
 dependencies = [
@@ -25,6 +28,7 @@ dependencies = [
     "uvicorn>=0.27.0",
     "watchdog>=3.0.0",
     "python-multipart>=0.0.6",
+    "click>=8.1.0",
 ]
 
 [project.optional-dependencies]
@@ -34,17 +38,35 @@ dev = [
     "httpx>=0.26.0",
     "ruff>=0.1.0",
     "mypy>=1.8.0",
+    "build>=1.0.0",
 ]
 
 [project.scripts]
-bin-server = "main:run"
+fwserve = "fwserve.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/yourusername/fwserve"
+Documentation = "https://github.com/yourusername/fwserve#readme"
+Repository = "https://github.com/yourusername/fwserve"
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["."]
+packages = ["src/fwserve"]
+
+[tool.hatch.build]
+include = [
+    "src/fwserve/py.typed",
+]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "src/fwserve",
+    "README.md",
+    "LICENSE",
+]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -64,6 +86,7 @@ ignore_missing_imports = true
 [tool.ruff]
 target-version = "py311"
 line-length = 100
+src = ["src"]
 
 [tool.ruff.lint]
 select = [
@@ -82,3 +105,13 @@ ignore = [
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["S101"]
+# Server modules intentionally bind to all interfaces
+"src/fwserve/config.py" = ["S104"]
+"src/fwserve/syslog_server.py" = ["S104"]
+# CLI module needs subprocess calls and system operations
+"src/fwserve/cli.py" = [
+    "S103",   # chmod with permissive mask (needed for directories)
+    "S104",   # Binding to all interfaces (expected for server)
+    "S603",   # subprocess without shell=True (we use lists)
+    "S607",   # Partial executable path (system commands like systemctl)
+]
