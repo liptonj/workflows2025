@@ -11,7 +11,7 @@
         "properties": {
           "value": "",
           "scope": "input",
-          "name": "Organization Name",
+          "name": "NMS - Organization Name",
           "type": "datatype.string",
           "description": "Name for the new Meraki organization.",
           "is_required": true,
@@ -27,7 +27,7 @@
         "properties": {
           "value": "",
           "scope": "input",
-          "name": "Network Name",
+          "name": "NMS - Network Name",
           "type": "datatype.string",
           "description": "Name for the new network.",
           "is_required": true,
@@ -43,7 +43,7 @@
         "properties": {
           "value": "America/Los_Angeles",
           "scope": "input",
-          "name": "Network Time Zone",
+          "name": "NMS - Network Time Zone",
           "type": "datatype.string",
           "description": "IANA time zone for the network.",
           "is_required": true,
@@ -59,7 +59,7 @@
         "properties": {
           "value": "[\"wireless\"]",
           "scope": "input",
-          "name": "Network Product Types (JSON Array)",
+          "name": "NMS - Network Product Types (JSON Array)",
           "type": "datatype.string",
           "description": "JSON array of product types (e.g., [\"wireless\"]).",
           "is_required": true,
@@ -75,7 +75,7 @@
         "properties": {
           "value": 0,
           "scope": "input",
-          "name": "Guest SSID Number",
+          "name": "NMS - Guest SSID Number",
           "type": "datatype.integer",
           "description": "Guest SSID number to configure (0-14).",
           "is_required": true,
@@ -91,7 +91,7 @@
         "properties": {
           "value": "Guest",
           "scope": "input",
-          "name": "Guest SSID Name",
+          "name": "NMS - Guest SSID Name",
           "type": "datatype.string",
           "description": "Guest SSID name to configure.",
           "is_required": true,
@@ -107,7 +107,7 @@
         "properties": {
           "value": true,
           "scope": "input",
-          "name": "Guest SSID Enabled",
+          "name": "NMS - Guest SSID Enabled",
           "type": "datatype.boolean",
           "description": "Enable or disable the Guest SSID.",
           "is_required": true,
@@ -123,7 +123,7 @@
         "properties": {
           "value": "open",
           "scope": "input",
-          "name": "Guest SSID Auth Mode",
+          "name": "NMS - Guest SSID Auth Mode",
           "type": "datatype.string",
           "description": "Guest SSID auth mode (e.g., open, psk, 8021x-radius).",
           "is_required": true,
@@ -139,7 +139,7 @@
         "properties": {
           "value": "Click-through splash page",
           "scope": "input",
-          "name": "Guest SSID Splash Page",
+          "name": "NMS - Guest SSID Splash Page",
           "type": "datatype.string",
           "description": "Guest splash page mode.",
           "is_required": true,
@@ -155,7 +155,7 @@
         "properties": {
           "value": true,
           "scope": "input",
-          "name": "Guest SSID Visible",
+          "name": "NMS - Guest SSID Visible",
           "type": "datatype.boolean",
           "description": "Whether the Guest SSID is visible.",
           "is_required": true,
@@ -171,7 +171,7 @@
         "properties": {
           "value": 1,
           "scope": "input",
-          "name": "Employees SSID Number",
+          "name": "NMS - Employees SSID Number",
           "type": "datatype.integer",
           "description": "Employees SSID number to configure (0-14).",
           "is_required": true,
@@ -187,7 +187,7 @@
         "properties": {
           "value": "Employees",
           "scope": "input",
-          "name": "Employees SSID Name",
+          "name": "NMS - Employees SSID Name",
           "type": "datatype.string",
           "description": "Employees SSID name to configure.",
           "is_required": true,
@@ -203,7 +203,7 @@
         "properties": {
           "value": true,
           "scope": "input",
-          "name": "Employees SSID Enabled",
+          "name": "NMS - Employees SSID Enabled",
           "type": "datatype.boolean",
           "description": "Enable or disable the Employees SSID.",
           "is_required": true,
@@ -219,7 +219,7 @@
         "properties": {
           "value": "open",
           "scope": "input",
-          "name": "Employees SSID Auth Mode",
+          "name": "NMS - Employees SSID Auth Mode",
           "type": "datatype.string",
           "description": "Employees SSID auth mode (e.g., open, psk, 8021x-radius).",
           "is_required": true,
@@ -235,7 +235,7 @@
         "properties": {
           "value": "Click-through splash page",
           "scope": "input",
-          "name": "Employees SSID Splash Page",
+          "name": "NMS - Employees SSID Splash Page",
           "type": "datatype.string",
           "description": "Employees splash page mode.",
           "is_required": true,
@@ -251,7 +251,7 @@
         "properties": {
           "value": true,
           "scope": "input",
-          "name": "Employees SSID Visible",
+          "name": "NMS - Employees SSID Visible",
           "type": "datatype.boolean",
           "description": "Whether the Employees SSID is visible.",
           "is_required": true,
@@ -267,7 +267,7 @@
         "properties": {
           "value": 2,
           "scope": "input",
-          "name": "IoT SSID Number",
+          "name": "NMS - IoT SSID Number",
           "type": "datatype.integer",
           "description": "IoT SSID number to configure (0-14).",
           "is_required": true,
@@ -283,7 +283,7 @@
         "properties": {
           "value": "IoT",
           "scope": "input",
-          "name": "IoT SSID Name",
+          "name": "NMS - IoT SSID Name",
           "type": "datatype.string",
           "description": "IoT SSID name to configure.",
           "is_required": true,
@@ -299,7 +299,7 @@
         "properties": {
           "value": true,
           "scope": "input",
-          "name": "IoT SSID Enabled",
+          "name": "NMS - IoT SSID Enabled",
           "type": "datatype.boolean",
           "description": "Enable or disable the IoT SSID.",
           "is_required": true,
@@ -315,7 +315,7 @@
         "properties": {
           "value": "open",
           "scope": "input",
-          "name": "IoT SSID Auth Mode",
+          "name": "NMS - IoT SSID Auth Mode",
           "type": "datatype.string",
           "description": "IoT SSID auth mode (e.g., open, psk, 8021x-radius).",
           "is_required": true,
@@ -331,7 +331,7 @@
         "properties": {
           "value": "Click-through splash page",
           "scope": "input",
-          "name": "IoT SSID Splash Page",
+          "name": "NMS - IoT SSID Splash Page",
           "type": "datatype.string",
           "description": "IoT splash page mode.",
           "is_required": true,
@@ -347,7 +347,7 @@
         "properties": {
           "value": true,
           "scope": "input",
-          "name": "IoT SSID Visible",
+          "name": "NMS - IoT SSID Visible",
           "type": "datatype.boolean",
           "description": "Whether the IoT SSID is visible.",
           "is_required": true,
@@ -363,7 +363,7 @@
         "properties": {
           "value": "NetworkAdmins",
           "scope": "input",
-          "name": "SAML Role Name",
+          "name": "NMS - SAML Role Name",
           "type": "datatype.string",
           "description": "SAML role name to create in the organization.",
           "is_required": true,
@@ -379,7 +379,7 @@
         "properties": {
           "value": "none",
           "scope": "input",
-          "name": "SAML Org Access",
+          "name": "NMS - SAML Org Access",
           "type": "datatype.string",
           "description": "Organization-level access for the SAML role (none, read-only, full).",
           "is_required": true,
@@ -395,7 +395,7 @@
         "properties": {
           "value": "full",
           "scope": "input",
-          "name": "SAML Network Access",
+          "name": "NMS - SAML Network Access",
           "type": "datatype.string",
           "description": "Network-level access for the SAML role (read-only, full).",
           "is_required": true,
@@ -411,7 +411,7 @@
         "properties": {
           "value": "",
           "scope": "output",
-          "name": "Organization ID",
+          "name": "NMS - Organization ID",
           "type": "datatype.string",
           "is_required": false,
           "display_on_wizard": false,
@@ -426,7 +426,7 @@
         "properties": {
           "value": "",
           "scope": "output",
-          "name": "Network ID",
+          "name": "NMS - Network ID",
           "type": "datatype.string",
           "is_required": false,
           "display_on_wizard": false,
@@ -441,7 +441,7 @@
         "properties": {
           "value": "",
           "scope": "output",
-          "name": "SAML Role ID",
+          "name": "NMS - SAML Role ID",
           "type": "datatype.string",
           "is_required": false,
           "display_on_wizard": false,
