@@ -33,7 +33,7 @@
       },
       "target": {
         "target_type": "terminal.endpoint",
-        "target_id": "definition_target_02P4LVQDHL55S7REF8cpmPP30MKDUKnRQDl",
+        "target_id": "definition_target_02SXP7C95Y9J56IqyjHnR9YXHNH0U2TzxXX",
         "execute_on_workflow_target": true
       }
     },
@@ -81,7 +81,7 @@
           "continue_on_failure": false,
           "description": "Execute Python Script",
           "display_name": "Pull Details",
-          "script": "import re\n\noutput = '''$activity.definition_activity_02P2TQZLY4UGH2FPDpQFQKWEl7vhwS3YCZQ.output.response_body$'''\n\n\ndef _first_match(patterns, text, flags=0):\n    for pattern in patterns:\n        match = re.search(pattern, text, flags)\n        if match:\n            return match.group(1).strip()\n    return \"\"\n\n\nversion = _first_match(\n    [\n        r\"Cisco IOS XE Software, Version\\s+([^\\n]+)\",\n        r\"Cisco IOS Software,\\s+Version\\s+([^\\s,]+)\",\n        r\"IOS\\s+\\([^\\)]+\\)\\s+Software,\\s+Version\\s+([^\\s,]+)\",\n        r\"Version\\s+([^\\s,]+)\",\n    ],\n    output,\n)\n\nmodel = _first_match(\n    [\n        r\"^cisco\\s+([^\\s]+)\\s*\\(\",\n        r\"Model Number\\s*:\\s*([^\\n]+)\",\n        r\"[Pp]latform\\s*:\\s*([^\\n]+)\",\n        r\"[Hh]ardware\\s*:\\s*([^,\\n]+)\",\n    ],\n    output,\n    flags=re.MULTILINE,\n)\n\nserial = _first_match(\n    [\n        r\"System Serial Number\\s*:\\s*([^\\n]+)\",\n        r\"Processor board ID\\s+([^\\n]+)\",\n        r\"[Ss]erial [Nn]umber\\s*:\\s*([^\\n]+)\",\n    ],\n    output,\n)",
+          "script": "version = '''$activity.definition_activity_02P2TQZLY4UGH2FPDpQFQKWEl7vhwS3YCZQ.output.response_body$'''.split('''Cisco IOS XE Software, Version ''')[1].split(\"\\n\")[0]\nmodel = '''$activity.definition_activity_02P2TQZLY4UGH2FPDpQFQKWEl7vhwS3YCZQ.output.response_body$'''.split(\"Model Number\")[1].split(\":\")[1].split(\"\\n\")[0]\nserial = '''$activity.definition_activity_02P2TQZLY4UGH2FPDpQFQKWEl7vhwS3YCZQ.output.response_body$'''.split(\"System Serial Number\")[1].split(\":\")[1].split(\"\\n\")[0]",
           "script_queries": [
             {
               "script_query": "version",
@@ -256,52 +256,53 @@
     ]
   },
   "targets": {
-    "definition_target_02P4LVQDHL55S7REF8cpmPP30MKDUKnRQDl": {
-      "unique_name": "definition_target_02P4LVQDHL55S7REF8cpmPP30MKDUKnRQDl",
-      "name": "new 9300",
-      "title": "new 9300",
+    "definition_target_02SXP7C95Y9J56IqyjHnR9YXHNH0U2TzxXX": {
+      "unique_name": "definition_target_02SXP7C95Y9J56IqyjHnR9YXHNH0U2TzxXX",
+      "name": "Lab Router",
+      "title": "Lab Router",
       "type": "terminal.endpoint",
       "base_type": "target",
       "object_type": "definition_target",
       "properties": {
-        "ao_remote_id": "02P2SHKNK32TA2r8Q1xXpHzXK95O4OabJZG",
-        "default_runtime_user_id": "definition_runtime_user_02P2TLA5OFON73NG06LLswdjJSaeQZHoeqT",
-        "display_name": "new 9300",
-        "host": "192.168.30.167",
+        "ao_remote_id": "02QRCDUNN5EP57Lujs3OVleizRjKjeWIk7C",
+        "default_runtime_user_id": "definition_runtime_user_02SXOXFRCU81P0vnYr3CyRg0mx5tw5WuSWk",
+        "display_name": "Lab Router",
+        "host": "10.230.255.20",
         "port": 22,
         "protocol": "ssh"
       }
     }
   },
   "runtime_users": {
-    "definition_runtime_user_02P2TLA5OFON73NG06LLswdjJSaeQZHoeqT": {
-      "unique_name": "definition_runtime_user_02P2TLA5OFON73NG06LLswdjJSaeQZHoeqT",
-      "name": "Bryn 9300's",
-      "title": "Bryn 9300's",
+    "definition_runtime_user_02SXOXFRCU81P0vnYr3CyRg0mx5tw5WuSWk": {
+      "unique_name": "definition_runtime_user_02SXOXFRCU81P0vnYr3CyRg0mx5tw5WuSWk",
+      "name": "Local SSH Password",
+      "title": "Local SSH Password",
       "type": "runtime_user.terminal_password_credentials",
       "base_type": "runtime_user",
       "object_type": "definition_runtime_user",
       "properties": {
-        "admin_password": "*****",
-        "display_name": "Bryn 9300's",
+        "display_name": "Local SSH Password",
         "password": "*****",
-        "user": "admin"
+        "user": "josh"
       }
     }
   },
   "remotemetas": {
-    "remote_meta_02P2SHKO2RO9C7Qxo4zPaGUsadF677VPMbM": {
+    "remote_meta_02QRCDUO490GT54DMFvpHjpjv5WuGFNYvBe": {
       "base_type": "remote_meta",
       "type": "generic.remote_meta",
-      "name": "Bryn's Basement",
-      "title": "Bryn's Basement",
+      "name": "Home-Lab",
+      "title": "Home-Lab",
       "version": "1.0.0",
       "properties": {
         "advanced": {
-          "require_advanced": false
+          "remote_cluster_subnet": "10.42.0.0/16",
+          "remote_service_subnet": "10.43.0.0/16",
+          "require_advanced": true
         },
         "cloud_type": "vmware",
-        "display_name": "Bryn's Basement",
+        "display_name": "Home-Lab",
         "network": {
           "is_dhcp": true
         },
@@ -309,7 +310,7 @@
           "require_proxy": false
         }
       },
-      "unique_name": "remote_meta_02P2SHKO2RO9C7Qxo4zPaGUsadF677VPMbM",
+      "unique_name": "remote_meta_02QRCDUO490GT54DMFvpHjpjv5WuGFNYvBe",
       "object_type": "remote_meta"
     }
   }
