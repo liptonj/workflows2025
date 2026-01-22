@@ -1,16 +1,9 @@
-name: CI
+name: CI and Publish
 
 on:
   push:
-    branches: [main]
-    paths:
-      - 'fwserve/**'
-      - '.github/workflows/ci.yml'
-  pull_request:
-    branches: [main]
-    paths:
-      - 'fwserve/**'
-      - '.github/workflows/ci.yml'
+    tags:
+      - 'v*.*.*'
 
 jobs:
   test:
@@ -48,6 +41,7 @@ jobs:
 
   build:
     name: Build package
+    needs: test
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -55,6 +49,15 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Get version from tag
+        id: get_version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+      - name: Update version in pyproject.toml
+        run: |
+          sed -i "s/^version = .*/version = \"${{ steps.get_version.outputs.VERSION }}\"/" pyproject.toml
+          cat pyproject.toml | grep "^version"
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -73,3 +76,29 @@ jobs:
         run: |
           pip install twine
           twine check dist/*
+
+      - name: Store the distribution packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-package-distributions
+          path: fwserve/dist/
+
+  publish-pypi:
+    name: Publish to PyPI
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: PYPI
+      url: https://pypi.org/p/fwserve
+    permissions:
+      id-token: write
+
+    steps:
+      - name: Download distribution packages
+        uses: actions/download-artifact@v4
+        with:
+          name: python-package-distributions
+          path: dist/
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
