@@ -39,6 +39,38 @@ def _is_root() -> bool:
     return os.geteuid() == 0
 
 
+def _find_fwserve_python() -> str:
+    """Find the Python interpreter that has fwserve installed.
+
+    When running via sudo, sys.executable points to system Python,
+    but fwserve might be installed in a pipx venv. This function
+    finds the correct Python path.
+
+    Returns:
+        Path to the Python interpreter with fwserve installed.
+    """
+    # First, check if fwserve module's location gives us a hint
+    import fwserve
+
+    fwserve_path = Path(fwserve.__file__).resolve()
+
+    # Check if it's in a pipx venv (e.g., ~/.local/share/pipx/venvs/fwserve/)
+    # or similar virtual environment structure
+    for parent in fwserve_path.parents:
+        # Look for bin/python in a venv structure
+        possible_python = parent / "bin" / "python"
+        if possible_python.exists():
+            return str(possible_python)
+
+        # Also check for bin/python3
+        possible_python3 = parent / "bin" / "python3"
+        if possible_python3.exists():
+            return str(possible_python3)
+
+    # Fallback to sys.executable
+    return sys.executable
+
+
 def _user_exists(username: str) -> bool:
     """Check if a system user exists."""
     try:
@@ -354,8 +386,9 @@ def install(
     os.chmod(files_dir, 0o755)
     os.chmod(logs_dir, 0o755)
 
-    # Find Python executable
-    python_path = sys.executable
+    # Find Python executable (handles pipx installations)
+    python_path = _find_fwserve_python()
+    click.echo(f"Using Python: {python_path}")
 
     # Install systemd service
     if not no_service:
