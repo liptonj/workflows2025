@@ -221,6 +221,9 @@ Type=simple
 User={user}
 Group={group}
 WorkingDirectory={install_dir}
+
+# Allow binding to privileged ports (below 1024) like syslog port 514
+AmbientCapabilities=CAP_NET_BIND_SERVICE
 ExecStart={python_path} -m uvicorn fwserve.app:app --host 0.0.0.0 --port {port}
 Restart=always
 RestartSec=5
