@@ -49,10 +49,10 @@ IGNORED_MESSAGE_PATTERNS = [
 
 def should_filter_message(message: str) -> bool:
     """Check if a syslog message should be filtered out.
-    
+
     Args:
         message: The syslog message text to check.
-        
+
     Returns:
         True if the message should be filtered (ignored), False otherwise.
     """
@@ -136,7 +136,7 @@ def _parse_rfc3164(rest: str) -> dict[str, Any] | None:
 
 def _parse_cisco_ios(rest: str) -> dict[str, Any] | None:
     """Parse Cisco IOS/IOS-XE syslog format.
-    
+
     Format: "seqno: hostname: seqno: *timestamp: %FACILITY-SEV-MNEMONIC: message"
     Example: "90: SITE1-Gateway: 000092: *Jan 23 00:59:32.649 EST: %SYS-5-CONFIG_I: ..."
     """
