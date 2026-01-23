@@ -59,6 +59,7 @@ packages = ["src/fwserve"]
 [tool.hatch.build]
 include = [
     "src/fwserve/py.typed",
+    "src/fwserve/templates/*.html",
 ]
 
 [tool.hatch.build.targets.sdist]
