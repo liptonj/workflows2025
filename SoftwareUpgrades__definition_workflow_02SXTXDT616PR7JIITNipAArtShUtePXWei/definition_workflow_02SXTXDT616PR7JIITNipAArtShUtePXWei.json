@@ -1,0 +1,1281 @@
+{
+  "workflow": {
+    "unique_name": "definition_workflow_02SXTXDT616PR7JIITNipAArtShUtePXWei",
+    "name": "Software Upgrade",
+    "title": "Software Upgrade",
+    "type": "generic.workflow",
+    "base_type": "workflow",
+    "variables": [
+      {
+        "schema_id": "datatype.boolean",
+        "properties": {
+          "value": false,
+          "scope": "output",
+          "name": "Upgrade Started",
+          "type": "datatype.boolean",
+          "is_required": false,
+          "display_on_wizard": false,
+          "is_invisible": false,
+          "variable_string_format": ""
+        },
+        "unique_name": "variable_workflow_02SYFKT698IFL33H5Ir9GSTPI8P8YeNb9fm",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "tabletype_02PFLRBJIBB4Z6TnKzO28tCUqClmfnuoRHX",
+        "properties": {
+          "value": [
+            {
+              "column_data": {
+                "optionLabel": "17.18.1",
+                "optionValue": "c8000v-universalk9.17.18.01a.SPA.bin"
+              }
+            },
+            {
+              "column_data": {
+                "optionLabel": "17.18.2",
+                "optionValue": "c8000v-universalk9.17.18.02.SPA.bin"
+              }
+            }
+          ],
+          "scope": "input",
+          "name": "Software Version",
+          "type": "datatype.table",
+          "is_required": false,
+          "display_on_wizard": false,
+          "is_invisible": false,
+          "variable_string_format": ""
+        },
+        "unique_name": "variable_workflow_02SYQ07PKZ035567nirnNcRbVAHOAQ74yYt",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "",
+          "scope": "local",
+          "name": "MD5 Value",
+          "type": "datatype.string",
+          "is_required": false,
+          "display_on_wizard": false,
+          "is_invisible": false,
+          "variable_string_format": "text"
+        },
+        "unique_name": "variable_workflow_02SYQ3TGCYSQ96f3LrE3tJUCSuQDbpdjeS7",
+        "object_type": "variable_workflow"
+      }
+    ],
+    "properties": {
+      "atomic": {
+        "is_atomic": false
+      },
+      "delete_workflow_instance": false,
+      "display_name": "Software Upgrade",
+      "runtime_user": {
+        "target_default": true
+      },
+      "target": {
+        "target_type": "terminal.endpoint",
+        "specify_on_workflow_start": true
+      }
+    },
+    "object_type": "definition_workflow",
+    "actions": [
+      {
+        "unique_name": "definition_activity_02SXTXGZGMUV623Jzc1SBLzq2W3kLND4Tal",
+        "name": "Pre Flight Check",
+        "title": "Pre Flight Check",
+        "type": "workflow.sub_workflow",
+        "base_type": "subworkflow",
+        "properties": {
+          "display_name": "Pre Flight Check",
+          "runtime_user": {
+            "target_default": true
+          },
+          "target": {
+            "execute_on_this_target": true,
+            "target_id": "definition_target_02SXP7C95Y9J56IqyjHnR9YXHNH0U2TzxXX",
+            "target_type": "terminal.endpoint"
+          },
+          "workflow_id": "definition_workflow_02P2TQOB7DX6K3gAgOuYpTjybvDO9rat6So",
+          "workflow_name": "Pre Flight Check"
+        },
+        "object_type": "definition_activity"
+      },
+      {
+        "unique_name": "definition_activity_02SYFG36WVSK84tGJ6FWaYkBGAsDAy0NGp0",
+        "name": "Condition Block",
+        "title": "Condition Block",
+        "type": "logic.if_else",
+        "base_type": "activity",
+        "properties": {
+          "continue_on_failure": false,
+          "description": "If-Else condition block",
+          "display_name": "Condition Block",
+          "skip_execution": false
+        },
+        "object_type": "definition_activity",
+        "blocks": [
+          {
+            "unique_name": "definition_activity_02SYFG39UDIJ00ToNGNrSSE5h7tLmdXFtaW",
+            "name": "Condition Branch",
+            "title": "Condition Branch",
+            "type": "logic.condition_block",
+            "base_type": "activity",
+            "properties": {
+              "condition": {
+                "left_operand": "$activity.definition_activity_02SXTXGZGMUV623Jzc1SBLzq2W3kLND4Tal.output.variable_workflow_02SXTYY8AQAGT2NbeV2eGxFHZ1QU1qdOgfK$",
+                "operator": "eq",
+                "right_operand": true
+              },
+              "continue_on_failure": false,
+              "display_name": "Condition Branch",
+              "skip_execution": false
+            },
+            "object_type": "definition_activity",
+            "actions": [
+              {
+                "unique_name": "definition_activity_02SYQ1PMQ2VC32TjJSHWf0ZiaocBsGp6RdB",
+                "name": "Condition Block",
+                "title": "Condition Block",
+                "type": "logic.if_else",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "If-Else condition block",
+                  "display_name": "Condition Block",
+                  "skip_execution": false
+                },
+                "object_type": "definition_activity",
+                "blocks": [
+                  {
+                    "unique_name": "definition_activity_02SYQ1PP3F7U74V9DB5XngUAUCafhmxOxXB",
+                    "name": "Condition Branch",
+                    "title": "17.18.2",
+                    "type": "logic.condition_block",
+                    "base_type": "activity",
+                    "properties": {
+                      "condition": {
+                        "left_operand": "$workflow.definition_workflow_02SXTXDT616PR7JIITNipAArtShUtePXWei.input.variable_workflow_02SYQ07PKZ035567nirnNcRbVAHOAQ74yYt[0].optionValue$",
+                        "operator": "eq",
+                        "right_operand": "c8000v-universalk9.17.18.02.SPA.bin"
+                      },
+                      "continue_on_failure": false,
+                      "display_name": "17.18.2",
+                      "skip_execution": false
+                    },
+                    "object_type": "definition_activity",
+                    "actions": [
+                      {
+                        "unique_name": "definition_activity_02SYQ3BIWA1AJ2RhsXljnHBUA5jkt4Gn18p",
+                        "name": "Set Variables",
+                        "title": "Set Variables",
+                        "type": "core.set_multiple_variables",
+                        "base_type": "activity",
+                        "properties": {
+                          "continue_on_failure": false,
+                          "description": "Set Variables",
+                          "display_name": "Set Variables",
+                          "skip_execution": false,
+                          "variables_to_update": [
+                            {
+                              "variable_to_update": "$workflow.definition_workflow_02SXTXDT616PR7JIITNipAArtShUtePXWei.local.variable_workflow_02SYQ3TGCYSQ96f3LrE3tJUCSuQDbpdjeS7$",
+                              "variable_value_new": "46b5aa40c0242ea2a8329ba8a2f72731"
+                            }
+                          ]
+                        },
+                        "object_type": "definition_activity"
+                      }
+                    ]
+                  },
+                  {
+                    "unique_name": "definition_activity_02SYQ522YBW5C4bePx8kNFuTe4kDFw2HqwN",
+                    "name": "Condition Branch",
+                    "title": "17.18.1",
+                    "type": "logic.condition_block",
+                    "base_type": "activity",
+                    "properties": {
+                      "condition": {
+                        "left_operand": "$workflow.definition_workflow_02SXTXDT616PR7JIITNipAArtShUtePXWei.input.variable_workflow_02SYQ07PKZ035567nirnNcRbVAHOAQ74yYt[0].optionValue$",
+                        "operator": "eq",
+                        "right_operand": "c8000v-universalk9.17.18.01a.SPA.bin"
+                      },
+                      "continue_on_failure": false,
+                      "display_name": "17.18.1",
+                      "skip_execution": false
+                    },
+                    "object_type": "definition_activity",
+                    "actions": [
+                      {
+                        "unique_name": "definition_activity_02SYQ63J5GY8S08NpBrW9KzgJomI9V6TeEl",
+                        "name": "Set Variables",
+                        "title": "Set Variables",
+                        "type": "core.set_multiple_variables",
+                        "base_type": "activity",
+                        "properties": {
+                          "continue_on_failure": false,
+                          "description": "Set Variables",
+                          "display_name": "Set Variables",
+                          "skip_execution": false,
+                          "variables_to_update": [
+                            {
+                              "variable_to_update": "$workflow.definition_workflow_02SXTXDT616PR7JIITNipAArtShUtePXWei.local.variable_workflow_02SYQ3TGCYSQ96f3LrE3tJUCSuQDbpdjeS7$",
+                              "variable_value_new": "4ba90e5e72f8bbe1f132ef1cdf554676"
+                            }
+                          ]
+                        },
+                        "object_type": "definition_activity"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "unique_name": "definition_activity_02SXTXPW64GLU7iPjKWfmRx0Xh0UrW5dJZh",
+                "name": "EEM approach",
+                "title": "EEM approach",
+                "type": "workflow.sub_workflow",
+                "base_type": "subworkflow",
+                "properties": {
+                  "continue_on_failure": false,
+                  "display_name": "EEM approach",
+                  "input": {
+                    "variable_workflow_02SXT2FUG5D242NLYTQCzjLtS94Kp41mfGL": "$workflow.definition_workflow_02SXTXDT616PR7JIITNipAArtShUtePXWei.input.variable_workflow_02SYQ07PKZ035567nirnNcRbVAHOAQ74yYt[0].optionValue$",
+                    "variable_workflow_02SXTDEDAGRWA17mfIp7arrWBZcF29aa1vz": "$workflow.definition_workflow_02SXTXDT616PR7JIITNipAArtShUtePXWei.local.variable_workflow_02SYQ3TGCYSQ96f3LrE3tJUCSuQDbpdjeS7$"
+                  },
+                  "runtime_user": {
+                    "target_default": true
+                  },
+                  "skip_execution": false,
+                  "target": {
+                    "execute_on_this_target": true,
+                    "target_id": "definition_target_02SXP7C95Y9J56IqyjHnR9YXHNH0U2TzxXX",
+                    "target_type": "terminal.endpoint"
+                  },
+                  "workflow_id": "definition_workflow_02P2W9QM5HKX310sEkbhcXLfXwqjWjKDu2J",
+                  "workflow_name": "EEM approach"
+                },
+                "object_type": "definition_activity"
+              },
+              {
+                "unique_name": "definition_activity_02SYFJC9VQ10D6HbhISuv95vhFPNzeMM7U5",
+                "name": "Set Variables",
+                "title": "Set Variables",
+                "type": "core.set_multiple_variables",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Set Variables",
+                  "display_name": "Set Variables",
+                  "skip_execution": false,
+                  "variables_to_update": [
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02SXTXDT616PR7JIITNipAArtShUtePXWei.output.variable_workflow_02SYFKT698IFL33H5Ir9GSTPI8P8YeNb9fm$",
+                      "variable_value_new": "$activity.definition_activity_02SXTXPW64GLU7iPjKWfmRx0Xh0UrW5dJZh.output.succeeded$"
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02SXTXDT616PR7JIITNipAArtShUtePXWei.output.workflow_results$",
+                      "variable_value_new": "$activity.definition_activity_02SXTXPW64GLU7iPjKWfmRx0Xh0UrW5dJZh.output.error.message$"
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02SXTXDT616PR7JIITNipAArtShUtePXWei.output.workflow_results_code$",
+                      "variable_value_new": "completed-successfully"
+                    }
+                  ]
+                },
+                "object_type": "definition_activity"
+              }
+            ]
+          },
+          {
+            "unique_name": "definition_activity_02SYFG3C7BKUC6A15ZKYrPwtBCrd4PuSWw7",
+            "name": "Condition Branch",
+            "title": "Condition Branch",
+            "type": "logic.condition_block",
+            "base_type": "activity",
+            "properties": {
+              "condition": {
+                "left_operand": "$activity.definition_activity_02SXTXGZGMUV623Jzc1SBLzq2W3kLND4Tal.output.variable_workflow_02SXTYY8AQAGT2NbeV2eGxFHZ1QU1qdOgfK$",
+                "operator": "eq",
+                "right_operand": false
+              },
+              "continue_on_failure": false,
+              "display_name": "Condition Branch",
+              "skip_execution": false
+            },
+            "object_type": "definition_activity",
+            "actions": [
+              {
+                "unique_name": "definition_activity_02SYFM9AQE0I60MHd8BySqo8Y49Daie1D1s",
+                "name": "Set Variables",
+                "title": "Set Variables",
+                "type": "core.set_multiple_variables",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Set Variables",
+                  "display_name": "Set Variables",
+                  "skip_execution": false,
+                  "variables_to_update": [
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02SXTXDT616PR7JIITNipAArtShUtePXWei.output.variable_workflow_02SYFKT698IFL33H5Ir9GSTPI8P8YeNb9fm$",
+                      "variable_value_new": false
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02SXTXDT616PR7JIITNipAArtShUtePXWei.output.workflow_results$",
+                      "variable_value_new": "$activity.definition_activity_02SXTXGZGMUV623Jzc1SBLzq2W3kLND4Tal.output.variable_workflow_02P2UXFINIHWG1FsBmZu85dGEZ8558ActwC$"
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02SXTXDT616PR7JIITNipAArtShUtePXWei.output.workflow_results_code$",
+                      "variable_value_new": "partially-completed"
+                    }
+                  ]
+                },
+                "object_type": "definition_activity"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "categories": [
+      "category_1BMfMXSnJMyt5Ihqi7rWJr5N8cf"
+    ]
+  },
+  "targets": {
+    "definition_target_02SXP7C95Y9J56IqyjHnR9YXHNH0U2TzxXX": {
+      "unique_name": "definition_target_02SXP7C95Y9J56IqyjHnR9YXHNH0U2TzxXX",
+      "name": "Lab Router",
+      "title": "Lab Router",
+      "type": "terminal.endpoint",
+      "base_type": "target",
+      "object_type": "definition_target",
+      "properties": {
+        "ao_remote_id": "02QRCDUNN5EP57Lujs3OVleizRjKjeWIk7C",
+        "default_runtime_user_id": "definition_runtime_user_02SXOXFRCU81P0vnYr3CyRg0mx5tw5WuSWk",
+        "display_name": "Lab Router",
+        "host": "10.230.255.20",
+        "port": 22,
+        "protocol": "ssh"
+      }
+    }
+  },
+  "runtime_users": {
+    "definition_runtime_user_02SXOXFRCU81P0vnYr3CyRg0mx5tw5WuSWk": {
+      "unique_name": "definition_runtime_user_02SXOXFRCU81P0vnYr3CyRg0mx5tw5WuSWk",
+      "name": "Local SSH Password",
+      "title": "Local SSH Password",
+      "type": "runtime_user.terminal_password_credentials",
+      "base_type": "runtime_user",
+      "object_type": "definition_runtime_user",
+      "properties": {
+        "display_name": "Local SSH Password",
+        "password": "*****",
+        "user": "josh"
+      }
+    }
+  },
+  "table_types": {
+    "tabletype_02PFLRBJIBB4Z6TnKzO28tCUqClmfnuoRHX": {
+      "unique_name": "tabletype_02PFLRBJIBB4Z6TnKzO28tCUqClmfnuoRHX",
+      "data_type": "datatype.tabletype",
+      "display_name": "7gwv2RENUMfBTz1Qa8MHoUU^b4Y0nJKCwPVxztGq\u00269h=MsioeNRYl3dsCl1^k8;X",
+      "columns": [
+        {
+          "is_required": true,
+          "maxLength": 256,
+          "maximum": 0,
+          "minimum": 0,
+          "name": "optionLabel",
+          "title": "Option label",
+          "type": "string"
+        },
+        {
+          "is_required": true,
+          "maxLength": 256,
+          "maximum": 0,
+          "minimum": 0,
+          "name": "optionValue",
+          "title": "Option value",
+          "type": "string"
+        }
+      ],
+      "base_type": "datatype",
+      "object_type": "tabletype"
+    }
+  },
+  "subworkflows": [
+    {
+      "workflow": {
+        "unique_name": "definition_workflow_02P2TQOB7DX6K3gAgOuYpTjybvDO9rat6So",
+        "name": "Pre Flight Check",
+        "title": "Pre Flight Check",
+        "type": "generic.workflow",
+        "base_type": "workflow",
+        "variables": [
+          {
+            "schema_id": "datatype.boolean",
+            "properties": {
+              "value": false,
+              "scope": "output",
+              "name": "Next Step",
+              "type": "datatype.boolean",
+              "is_required": false,
+              "display_on_wizard": false,
+              "is_invisible": false,
+              "variable_string_format": ""
+            },
+            "unique_name": "variable_workflow_02SXTYY8AQAGT2NbeV2eGxFHZ1QU1qdOgfK",
+            "object_type": "variable_workflow"
+          },
+          {
+            "schema_id": "datatype.string",
+            "properties": {
+              "value": "",
+              "scope": "output",
+              "name": "Files to potentially delete",
+              "type": "datatype.string",
+              "is_required": false,
+              "display_on_wizard": false,
+              "is_invisible": false,
+              "variable_string_format": ""
+            },
+            "unique_name": "variable_workflow_02P2UXFINIHWG1FsBmZu85dGEZ8558ActwC",
+            "object_type": "variable_workflow"
+          }
+        ],
+        "properties": {
+          "atomic": {
+            "is_atomic": false
+          },
+          "delete_workflow_instance": false,
+          "display_name": "Pre Flight Check",
+          "runtime_user": {
+            "target_default": true
+          },
+          "target": {
+            "target_type": "terminal.endpoint",
+            "target_id": "definition_target_02SXP7C95Y9J56IqyjHnR9YXHNH0U2TzxXX",
+            "execute_on_workflow_target": true
+          }
+        },
+        "object_type": "definition_workflow",
+        "actions": [
+          {
+            "unique_name": "definition_activity_02SYPDQ4Z5ZYL4v7ZhwYByNdc6RoaY1PTvL",
+            "name": "Execute Terminal Command(s)",
+            "title": "Get Version",
+            "type": "terminal.command",
+            "base_type": "activity",
+            "properties": {
+              "action_timeout": 180,
+              "command_timeout": 6,
+              "commands": "term len 0\nsh ver\nsend log 6 \"PRE-FLIGHT: SHOW VERSION COMPLETE\"",
+              "continue_on_failure": false,
+              "description": "Executes commands on terminal target",
+              "display_name": "Get Version",
+              "merge_commands": false,
+              "runtime_user": {
+                "target_default": true
+              },
+              "skip_execution": false,
+              "succeeded_expects": [
+                "9300-2",
+                "\"9300-2\"",
+                ".*#$",
+                "\"9300-2#\\n\""
+              ],
+              "target": {
+                "use_workflow_target": true
+              },
+              "user_responses": []
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_02P2U2T2QYUZH2hag9EbH6rPHxFq3mS1E3O",
+            "name": "Execute Python Script",
+            "title": "Pull Details",
+            "type": "python3.script",
+            "base_type": "activity",
+            "properties": {
+              "action_timeout": 180,
+              "continue_on_failure": false,
+              "description": "Execute Python Script",
+              "display_name": "Pull Details",
+              "script": "import re\n\noutput = '''$activity.definition_activity_02SYPDQ4Z5ZYL4v7ZhwYByNdc6RoaY1PTvL.output.response_body$'''\n\n\ndef _first_match(patterns, text, flags=0):\n    for pattern in patterns:\n        match = re.search(pattern, text, flags)\n        if match:\n            return match.group(1).strip()\n    return \"\"\n\n\nversion = _first_match(\n    [\n        r\"Cisco IOS XE Software, Version\\s+([^\\n]+)\",\n        r\"Cisco IOS Software,\\s+Version\\s+([^\\s,]+)\",\n        r\"IOS\\s+\\([^\\)]+\\)\\s+Software,\\s+Version\\s+([^\\s,]+)\",\n        r\"Version\\s+([^\\s,]+)\",\n    ],\n    output,\n)\n\nmodel = _first_match(\n    [\n        r\"^cisco\\s+([^\\s]+)\\s*\\(\",\n        r\"Model Number\\s*:\\s*([^\\n]+)\",\n        r\"[Pp]latform\\s*:\\s*([^\\n]+)\",\n        r\"[Hh]ardware\\s*:\\s*([^,\\n]+)\",\n    ],\n    output,\n    flags=re.MULTILINE,\n)\n\nserial = _first_match(\n    [\n        r\"System Serial Number\\s*:\\s*([^\\n]+)\",\n        r\"Processor board ID\\s+([^\\n]+)\",\n        r\"[Ss]erial [Nn]umber\\s*:\\s*([^\\n]+)\",\n    ],\n    output,\n)",
+              "script_queries": [
+                {
+                  "script_query": "version",
+                  "script_query_name": "version",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "model",
+                  "script_query_name": "model",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "serial",
+                  "script_query_name": "serial",
+                  "script_query_type": "string"
+                }
+              ],
+              "skip_execution": false
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_02P2UD7LGQZH724WgYVnvYLd5gyZTkYtXXk",
+            "name": "Execute Terminal Command(s)",
+            "title": "Check flash space",
+            "type": "terminal.command",
+            "base_type": "activity",
+            "properties": {
+              "action_timeout": 180,
+              "command_timeout": 60,
+              "commands": "term len 0\ndir flash:\ndir flash | inc .bin\nsend log 6 \"PRE-FLIGHT: CHECK SPACE COMPLETE\"",
+              "continue_on_failure": false,
+              "description": "Executes commands on terminal target",
+              "display_name": "Check flash space",
+              "merge_commands": false,
+              "runtime_user": {
+                "target_default": true
+              },
+              "skip_execution": false,
+              "target": {
+                "use_workflow_target": true
+              },
+              "user_responses": []
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_02P2UE59JBJ8I4LpYhoREmr6uBPySVyV3nb",
+            "name": "Execute Python Script",
+            "title": "Pull Details",
+            "type": "python3.script",
+            "base_type": "activity",
+            "properties": {
+              "action_timeout": 180,
+              "continue_on_failure": false,
+              "description": "Execute Python Script",
+              "display_name": "Pull Details",
+              "script": "import re\n\noutput = '''$activity.definition_activity_02P2UD7LGQZH724WgYVnvYLd5gyZTkYtXXk.output.response_body$'''\n\nfree_space = \"\"\n\npatterns = [\n    r\"bytes total \\((\\d+) bytes free\\)\",\n    r\"(\\d+) bytes free\",\n    r\"(\\d+)\\s+bytes\\s+available\",\n]\n\nfor pattern in patterns:\n    match = re.search(pattern, output)\n    if match:\n        free_space = match.group(1).strip()\n        break\n",
+              "script_queries": [
+                {
+                  "script_query": "free_space",
+                  "script_query_name": "free_space",
+                  "script_query_type": "string"
+                }
+              ],
+              "skip_execution": false
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_02P2UKEYQS5KE5dbRsEHZSFN3nfLjyQVI6Y",
+            "name": "Execute Terminal Command(s)",
+            "title": "check for .bin files",
+            "type": "terminal.command",
+            "base_type": "activity",
+            "properties": {
+              "action_timeout": 180,
+              "command_timeout": 60,
+              "commands": "term len 0\ndir flash: | inc .bin",
+              "continue_on_failure": false,
+              "description": "Executes commands on terminal target",
+              "display_name": "check for .bin files",
+              "merge_commands": false,
+              "runtime_user": {
+                "target_default": true
+              },
+              "skip_execution": false,
+              "target": {
+                "use_workflow_target": true
+              }
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_02P2UVAMRN4WA6Rv77Ih3jApY7RGQn3zwGa",
+            "name": "Condition Block",
+            "title": "Enough free flash?",
+            "type": "logic.if_else",
+            "base_type": "activity",
+            "properties": {
+              "conditions": [],
+              "continue_on_failure": false,
+              "description": "If-Else condition block",
+              "display_name": "Enough free flash?",
+              "skip_execution": false
+            },
+            "object_type": "definition_activity",
+            "blocks": [
+              {
+                "unique_name": "definition_activity_02P2UVAOCU9G51mKGjLEzmU3C2PKMEmGWb9",
+                "name": "Condition Branch",
+                "title": "Enough free space",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "condition": {
+                    "left_operand": "$activity.definition_activity_02P2UE59JBJ8I4LpYhoREmr6uBPySVyV3nb.output.script_queries.free_space$",
+                    "operator": "mregex",
+                    "right_operand": "^(?:1[3-9]\\d{8,}|[2-9]\\d{9,}|\\d{11,})$"
+                  },
+                  "continue_on_failure": false,
+                  "display_name": "Enough free space",
+                  "skip_execution": false
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02SXTYN2NSBVD6eSnoPig4ScoQIn8e9BPN2",
+                    "name": "Set Variables",
+                    "title": "Set Variables",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Set Variables",
+                      "display_name": "Set Variables",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02P2TQOB7DX6K3gAgOuYpTjybvDO9rat6So.output.variable_workflow_02SXTYY8AQAGT2NbeV2eGxFHZ1QU1qdOgfK$",
+                          "variable_value_new": true
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02P2TQOB7DX6K3gAgOuYpTjybvDO9rat6So.output.workflow_results$",
+                          "variable_value_new": "true"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02SYQM9YYKBQX4fwiZReiVkIC2ho4aIcFi7",
+                    "name": "Execute Terminal Command(s)",
+                    "title": "SEND LOG PREFLIGHT PASSED",
+                    "type": "terminal.command",
+                    "base_type": "activity",
+                    "properties": {
+                      "action_timeout": 180,
+                      "command_timeout": 60,
+                      "commands": "term len 0\nsend log 6 \"PRE-FLIGHT: Enough Free Space Starting Upgrade\"",
+                      "continue_on_failure": false,
+                      "description": "Executes commands on terminal target",
+                      "display_name": "SEND LOG PREFLIGHT PASSED",
+                      "merge_commands": false,
+                      "runtime_user": {
+                        "target_default": true
+                      },
+                      "skip_execution": false,
+                      "target": {
+                        "use_workflow_target": true
+                      },
+                      "user_responses": []
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              },
+              {
+                "unique_name": "definition_activity_02P2UVAP9EFEO13qyAsnbzq2HDORoxiBjIa",
+                "name": "Condition Branch",
+                "title": "Not enough free space",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "condition": {
+                    "left_operand": "$activity.definition_activity_02P2UE59JBJ8I4LpYhoREmr6uBPySVyV3nb.output.script_queries.free_space$",
+                    "operator": "mregex",
+                    "right_operand": "^(?:\\d{1,9}|1[0-2]\\d{8})$"
+                  },
+                  "continue_on_failure": false,
+                  "display_name": "Not enough free space",
+                  "skip_execution": false
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02P2UXLGTUD164X81O4ngA8FtD4vXBXc8Ws",
+                    "name": "Set Variables",
+                    "title": "Set Variables",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Set Variables",
+                      "display_name": "Set Variables",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02P2TQOB7DX6K3gAgOuYpTjybvDO9rat6So.output.variable_workflow_02P2UXFINIHWG1FsBmZu85dGEZ8558ActwC$",
+                          "variable_value_new": "$activity.definition_activity_02P2UKEYQS5KE5dbRsEHZSFN3nfLjyQVI6Y.output.response_body$"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02SYQN4VON0276pmikYBGq3q5LDL0yDu6yy",
+                    "name": "Execute Terminal Command(s)",
+                    "title": "SEND LOG PREFLIGHT FAILED",
+                    "type": "terminal.command",
+                    "base_type": "activity",
+                    "properties": {
+                      "action_timeout": 180,
+                      "command_timeout": 60,
+                      "commands": "term len 0\nsend log 6 \"PRE-FLIGHT: Not Enough Free Space Upgrade Halted\"",
+                      "continue_on_failure": false,
+                      "description": "Executes commands on terminal target",
+                      "display_name": "SEND LOG PREFLIGHT FAILED",
+                      "merge_commands": false,
+                      "runtime_user": {
+                        "target_default": true
+                      },
+                      "skip_execution": false,
+                      "target": {
+                        "use_workflow_target": true
+                      },
+                      "user_responses": []
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "categories": [
+          "category_1BMfMXSnJMyt5Ihqi7rWJr5N8cf"
+        ]
+      }
+    },
+    {
+      "workflow": {
+        "unique_name": "definition_workflow_02P2W9QM5HKX310sEkbhcXLfXwqjWjKDu2J",
+        "name": "EEM approach",
+        "title": "EEM approach",
+        "type": "generic.workflow",
+        "base_type": "workflow",
+        "variables": [
+          {
+            "schema_id": "datatype.string",
+            "properties": {
+              "value": "10.230.255.80",
+              "scope": "local",
+              "name": "ServerAddress",
+              "type": "datatype.string",
+              "is_required": false,
+              "display_on_wizard": false,
+              "is_invisible": false,
+              "variable_string_format": "text"
+            },
+            "unique_name": "variable_workflow_02SXT1UNPJHR64dkHOFNMvOS9XWuY41p146",
+            "object_type": "variable_workflow"
+          },
+          {
+            "schema_id": "datatype.string",
+            "properties": {
+              "value": "46b5aa40c0242ea2a8329ba8a2f72731",
+              "scope": "input",
+              "name": "MD5 Checksum",
+              "type": "datatype.string",
+              "is_required": false,
+              "display_on_wizard": false,
+              "is_invisible": false,
+              "variable_string_format": "text"
+            },
+            "unique_name": "variable_workflow_02SXTDEDAGRWA17mfIp7arrWBZcF29aa1vz",
+            "object_type": "variable_workflow"
+          },
+          {
+            "schema_id": "datatype.string",
+            "properties": {
+              "value": "c8000v-universalk9.17.18.02.SPA.bin",
+              "scope": "input",
+              "name": "File name",
+              "type": "datatype.string",
+              "is_required": false,
+              "display_on_wizard": false,
+              "is_invisible": false,
+              "variable_string_format": "text"
+            },
+            "unique_name": "variable_workflow_02SXT2FUG5D242NLYTQCzjLtS94Kp41mfGL",
+            "object_type": "variable_workflow"
+          },
+          {
+            "schema_id": "datatype.integer",
+            "properties": {
+              "value": 10,
+              "scope": "local",
+              "name": "Iteration Limit",
+              "type": "datatype.integer",
+              "is_required": false,
+              "display_on_wizard": false,
+              "is_invisible": false,
+              "variable_string_format": ""
+            },
+            "unique_name": "variable_workflow_02P2Y9UVNS3BA4LdeDnqgfJSj9isavc4xxP",
+            "object_type": "variable_workflow"
+          }
+        ],
+        "properties": {
+          "atomic": {
+            "is_atomic": false
+          },
+          "delete_workflow_instance": false,
+          "display_name": "EEM approach",
+          "runtime_user": {
+            "target_default": true
+          },
+          "target": {
+            "target_type": "terminal.endpoint",
+            "target_id": "definition_target_02SXP7C95Y9J56IqyjHnR9YXHNH0U2TzxXX",
+            "execute_on_workflow_target": true
+          }
+        },
+        "object_type": "definition_workflow",
+        "actions": [
+          {
+            "unique_name": "definition_activity_02P2W9TWYUD7U26Qgv3naxOT1shHTTpcQ5q",
+            "name": "Execute Terminal Command(s)",
+            "title": "install EEM Script to download code",
+            "type": "terminal.command",
+            "base_type": "activity",
+            "properties": {
+              "action_timeout": 180,
+              "command_timeout": 60,
+              "commands": "conf t\nfile prompt quiet\nno boot system\nevent manager session cli username josh\n event manager applet download_iosxe\n  event none maxrun 3600\naction 0.1 syslog priority informational msg \"EEM-UPGRADE: Starting IOS-XE download process\"\n  action 0.2 syslog priority informational msg \"EEM-UPGRADE: Target file - $workflow.definition_workflow_02P2W9QM5HKX310sEkbhcXLfXwqjWjKDu2J.input.variable_workflow_02SXT2FUG5D242NLYTQCzjLtS94Kp41mfGL$\"\n  action 1.0 cli command \"enable\"\n  action 1.5 cli command \"terminal length 0\"\naction 1.9 syslog priority informational msg \"EEM-UPGRADE: Initiating file copy from HTTP server\"\n  action 2.0 cli command \"copy /noverify http://$workflow.definition_workflow_02P2W9QM5HKX310sEkbhcXLfXwqjWjKDu2J.local.variable_workflow_02SXT1UNPJHR64dkHOFNMvOS9XWuY41p146$/files/$workflow.definition_workflow_02P2W9QM5HKX310sEkbhcXLfXwqjWjKDu2J.input.variable_workflow_02SXT2FUG5D242NLYTQCzjLtS94Kp41mfGL$ flash:\"\naction 2.5 syslog priority informational msg \"EEM-UPGRADE: File download completed successfully\"\n  action 9.0 syslog priority informational msg \"EEM-UPGRADE: download_iosxe applet finished\"\n end\nconf t\n event manager session cli username josh\n event manager applet upgrade_iosxe\n  event none maxrun 3600\naction 0.1 syslog priority informational msg \"EEM-UPGRADE: Starting IOS-XE upgrade installation process\"\n  action 0.2 syslog priority informational msg \"EEM-UPGRADE: Current version check in progress\"\n  action 1.0 cli command \"enable\"\n  action 1.5 cli command \"terminal length 0\"\naction 1.8 syslog priority informational msg \"EEM-UPGRADE: Executing install add/activate/commit command\"\n  action 1.9 syslog priority critical msg \"EEM-UPGRADE: CRITICAL - System will reload after successful install\"\n  !\n  ! Run the install command with no prompts\n  action 2.0 cli command \"install add file flash:$workflow.definition_workflow_02P2W9QM5HKX310sEkbhcXLfXwqjWjKDu2J.input.variable_workflow_02SXT2FUG5D242NLYTQCzjLtS94Kp41mfGL$ activate commit prompt-level none\"\n  !\n  ! Wait for completion or error messages\n  action 2.5 cli command \"\" pattern \"(?i)(success|completed|finished|%Error|failed)\"\naction 2.7 syslog priority informational msg \"EEM-UPGRADE: Install command pattern match detected\"\n \n  !action 9.0 syslog priority informational msg \"EEM-UPGRADE: upgrade_iosxe - Install command execution finished\"\n  action 9.1 syslog priority critical msg \"EEM-UPGRADE: SYSTEM RELOAD IMMINENT - Device will reboot shortly\"\n end\nconf t\nevent manager session cli username josh\n! ========================================\n! EEM SCRIPT 3: Pre-Reload Alert\n! ========================================\nevent manager applet pre_reload_alert\n  event syslog pattern \"INSTALL-.*-SUCCESSFUL\" maxrun 60\n  action 0.1 syslog priority critical msg \"EEM-UPGRADE: INSTALL SUCCESSFUL DETECTED\"\n  action 0.2 syslog priority critical msg \"EEM-UPGRADE: System reload will occur in approximately 60 seconds\"\n  action 1.0 cli command \"enable\"\n  action 1.5 cli command \"show version | include System image\"\n  action 2.0 syslog priority critical msg \"EEM-UPGRADE: Current boot image captured before reload\"\nend\nconf t\nevent manager session cli username josh\n! ========================================\n! EEM SCRIPT 5: Upgrade Status Monitor\n! ========================================\nevent manager applet upgrade_progress\n  event syslog pattern \"INSTALL_\" maxrun 60\n  action 1.0 syslog priority informational msg \"EEM-UPGRADE: Install progress update detected - $_syslog_msg\"\n  action 2.0 cli command \"enable\"\n  action 2.5 cli command \"show install log | tail 20\"\nend\n\nconf t\nevent manager session cli username josh\n! ========================================\n! EEM SCRIPT 6: Boot-Up Notification\n! ========================================\nevent manager applet device_rebooted\n  event syslog pattern \"%SYS-5-RESTART\" maxrun 60\n  action 0.1 syslog priority critical msg \"EEM-UPGRADE: DEVICE REBOOT DETECTED - System is restarting\"\n  action 1.0 cli command \"enable\"\n  action 2.0 cli command \"show version | include uptime\"\n  action 3.0 syslog priority critical msg \"EEM-UPGRADE: System uptime captured - Device has completed reload\"\nend\nconf t\nevent manager session cli username josh\n! ========================================\n! EEM SCRIPT 7: Error Detection\n! ========================================\nevent manager applet upgrade_error_detect\n  event syslog pattern \"%INSTALL.*ERROR|%INSTALL.*FAIL\" maxrun 60\n  action 0.1 syslog priority critical msg \"EEM-UPGRADE: ERROR DETECTED during installation process\"\n  action 0.2 syslog priority critical msg \"EEM-UPGRADE: Critical failure - $_syslog_msg\"\n  action 1.0 cli command \"enable\"\n  action 2.0 cli command \"show install log | tail 50\"\n  action 3.0 syslog priority critical msg \"EEM-UPGRADE: Install error log captured for analysis\"\nend\n\n! Save configuration\nwrite memory\n\n",
+              "continue_on_failure": false,
+              "description": "Executes commands on terminal target",
+              "display_name": "install EEM Script to download code",
+              "merge_commands": false,
+              "runtime_user": {
+                "target_default": true
+              },
+              "skip_execution": false,
+              "target": {
+                "use_workflow_target": true
+              }
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_02P2WBIYNPMD17dxFG2GR18BxD08lcySgQq",
+            "name": "Execute Terminal Command(s)",
+            "title": "download code",
+            "type": "terminal.command",
+            "base_type": "activity",
+            "properties": {
+              "action_timeout": 180,
+              "command_timeout": 60,
+              "commands": "event manager run download_iosxe",
+              "continue_on_failure": false,
+              "description": "Executes commands on terminal target",
+              "display_name": "download code",
+              "merge_commands": false,
+              "runtime_user": {
+                "target_default": true
+              },
+              "skip_execution": false,
+              "target": {
+                "use_workflow_target": true
+              }
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_02P2YAYK3CPWL52UKXW4mnpXI7RX92h5oRT",
+            "name": "Sleep",
+            "title": "Sleep",
+            "type": "core.sleep",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "description": "Sleep",
+              "display_name": "Sleep",
+              "skip_execution": false,
+              "sleep_interval": 120
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_02P2Y9XATU75P200n6lea3345m0PqTS4Ijg",
+            "name": "While Loop",
+            "title": "Poll for code to be downloaded",
+            "type": "logic.while",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "description": "While Loop action",
+              "display_name": "Poll for code to be downloaded",
+              "skip_execution": false
+            },
+            "object_type": "definition_activity",
+            "blocks": [
+              {
+                "unique_name": "definition_activity_02P2Y9XBWJA581AX5V6YRGBOfpCWGE7AB6f",
+                "name": "Condition Branch",
+                "title": "under iteration limit",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "condition": {
+                    "left_operand": "$workflow.definition_workflow_02P2W9QM5HKX310sEkbhcXLfXwqjWjKDu2J.local.variable_workflow_02P2Y9UVNS3BA4LdeDnqgfJSj9isavc4xxP$",
+                    "operator": "gt",
+                    "right_operand": 0
+                  },
+                  "continue_on_failure": false,
+                  "display_name": "under iteration limit",
+                  "skip_execution": false
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02SYRFNS8PB9F4ytQIlPGekZxzKm1O3ARel",
+                    "name": "Execute Terminal Command(s)",
+                    "title": "SYSLOG MD5",
+                    "type": "terminal.command",
+                    "base_type": "activity",
+                    "properties": {
+                      "action_timeout": 180,
+                      "command_timeout": 60,
+                      "commands": "send log 6 \"EEM-UPGRADE: Starting Checksum Verify\"",
+                      "continue_on_failure": false,
+                      "description": "Executes commands on terminal target",
+                      "display_name": "SYSLOG MD5",
+                      "merge_commands": false,
+                      "runtime_user": {
+                        "target_default": true
+                      },
+                      "skip_execution": false,
+                      "target": {
+                        "use_workflow_target": true
+                      }
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02P2YASOCW4IZ41u4na7MxR9BKdSXc55WBH",
+                    "name": "Execute Terminal Command(s)",
+                    "title": "Verify Checksum",
+                    "type": "terminal.command",
+                    "base_type": "activity",
+                    "properties": {
+                      "action_timeout": 180,
+                      "command_timeout": 180,
+                      "commands": "verify /md5 flash:$workflow.definition_workflow_02P2W9QM5HKX310sEkbhcXLfXwqjWjKDu2J.input.variable_workflow_02SXT2FUG5D242NLYTQCzjLtS94Kp41mfGL$",
+                      "continue_on_failure": false,
+                      "description": "Executes commands on terminal target",
+                      "display_name": "Verify Checksum",
+                      "merge_commands": false,
+                      "runtime_user": {
+                        "target_default": true
+                      },
+                      "skip_execution": false,
+                      "target": {
+                        "use_workflow_target": true
+                      }
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02P2YBXAYRTFC7MeytwE5KaXa3mroQ53XJL",
+                    "name": "Execute Python Script",
+                    "title": "extract Checksum",
+                    "type": "python3.script",
+                    "base_type": "activity",
+                    "properties": {
+                      "action_timeout": 180,
+                      "continue_on_failure": false,
+                      "description": "Execute Python Script",
+                      "display_name": "extract Checksum",
+                      "script": "import re\n\noutput = '''$activity.definition_activity_02P2YASOCW4IZ41u4na7MxR9BKdSXc55WBH.output.response_body$'''\n\nchecksum = \"\"\n\npatterns = [\n    r\"=\\s*([a-fA-F0-9]{32})\",\n    r\"MD5\\s*:\\s*([a-fA-F0-9]{32})\",\n    r\"verify.*?([a-fA-F0-9]{32})\",\n]\n\nfor pattern in patterns:\n    match = re.search(pattern, output, re.IGNORECASE)\n    if match:\n        checksum = match.group(1).strip()\n        break\n",
+                      "script_queries": [
+                        {
+                          "script_query": "checksum",
+                          "script_query_name": "checksum",
+                          "script_query_type": "string"
+                        }
+                      ],
+                      "skip_execution": false
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02SYRI7OGJWNZ6Qu3bG2FsfDBypJSMMW6WW",
+                    "name": "Execute Terminal Command(s)",
+                    "title": "SYSLOG MD5 Send Both Calc and Expected",
+                    "type": "terminal.command",
+                    "base_type": "activity",
+                    "properties": {
+                      "action_timeout": 180,
+                      "command_timeout": 60,
+                      "commands": "send log 6 \"EEM-UPGRADE: Caculated Checksum - $activity.definition_activity_02P2YBXAYRTFC7MeytwE5KaXa3mroQ53XJL.output.script_queries.checksum$\"\nsend log 6 \"EEM-UPGRADE: Expected Checksum - $workflow.definition_workflow_02P2W9QM5HKX310sEkbhcXLfXwqjWjKDu2J.input.variable_workflow_02SXTDEDAGRWA17mfIp7arrWBZcF29aa1vz$\"",
+                      "continue_on_failure": false,
+                      "description": "Executes commands on terminal target",
+                      "display_name": "SYSLOG MD5 Send Both Calc and Expected",
+                      "merge_commands": false,
+                      "runtime_user": {
+                        "target_default": true
+                      },
+                      "skip_execution": false,
+                      "target": {
+                        "use_workflow_target": true
+                      }
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02P2YCRX5F3LS57UH0Lex6qmXz2NKlKqNva",
+                    "name": "Condition Block",
+                    "title": "Checksum valid?",
+                    "type": "logic.if_else",
+                    "base_type": "activity",
+                    "properties": {
+                      "conditions": [],
+                      "continue_on_failure": false,
+                      "description": "If-Else condition block",
+                      "display_name": "Checksum valid?",
+                      "skip_execution": false
+                    },
+                    "object_type": "definition_activity",
+                    "blocks": [
+                      {
+                        "unique_name": "definition_activity_02P2YCRYG5WZ66lQa8TlyT8ClFaxAiTy2Bd",
+                        "name": "Condition Branch",
+                        "title": "Yes",
+                        "type": "logic.condition_block",
+                        "base_type": "activity",
+                        "properties": {
+                          "condition": {
+                            "left_operand": "$activity.definition_activity_02P2YBXAYRTFC7MeytwE5KaXa3mroQ53XJL.output.script_queries.checksum$",
+                            "operator": "eq",
+                            "right_operand": "$workflow.definition_workflow_02P2W9QM5HKX310sEkbhcXLfXwqjWjKDu2J.input.variable_workflow_02SXTDEDAGRWA17mfIp7arrWBZcF29aa1vz$"
+                          },
+                          "continue_on_failure": false,
+                          "display_name": "Yes",
+                          "skip_execution": false
+                        },
+                        "object_type": "definition_activity",
+                        "actions": [
+                          {
+                            "unique_name": "definition_activity_02SYRK5E8V5205yXEyyYjszggDu9ThZi9NS",
+                            "name": "Execute Terminal Command(s)",
+                            "title": "Matched Checksum",
+                            "type": "terminal.command",
+                            "base_type": "activity",
+                            "properties": {
+                              "action_timeout": 180,
+                              "command_timeout": 60,
+                              "commands": "send log 6 \"EEM-UPGRADE: Checksum Matches\"",
+                              "continue_on_failure": false,
+                              "description": "Executes commands on terminal target",
+                              "display_name": "Matched Checksum",
+                              "merge_commands": false,
+                              "runtime_user": {
+                                "target_default": true
+                              },
+                              "skip_execution": false,
+                              "target": {
+                                "use_workflow_target": true
+                              }
+                            },
+                            "object_type": "definition_activity"
+                          },
+                          {
+                            "unique_name": "definition_activity_02P2YX33FFEIM76EZbKo4pPZDhq4hIbY1Ug",
+                            "name": "Set Variables",
+                            "title": "Set Variables",
+                            "type": "core.set_multiple_variables",
+                            "base_type": "activity",
+                            "properties": {
+                              "continue_on_failure": false,
+                              "description": "Set Variables",
+                              "display_name": "Set Variables",
+                              "skip_execution": false,
+                              "variables_to_update": [
+                                {
+                                  "variable_to_update": "$workflow.definition_workflow_02P2W9QM5HKX310sEkbhcXLfXwqjWjKDu2J.local.variable_workflow_02P2Y9UVNS3BA4LdeDnqgfJSj9isavc4xxP$",
+                                  "variable_value_new": 0
+                                }
+                              ]
+                            },
+                            "object_type": "definition_activity"
+                          },
+                          {
+                            "unique_name": "definition_activity_02P2YY3GLPH2N4PuKwZBNLDW0IS0sKsKrDb",
+                            "name": "Execute Terminal Command(s)",
+                            "title": "Execute Terminal Command(s)",
+                            "type": "terminal.command",
+                            "base_type": "activity",
+                            "properties": {
+                              "action_timeout": 180,
+                              "command_timeout": 60,
+                              "commands": "event manager run upgrade_iosxe",
+                              "continue_on_failure": false,
+                              "description": "Executes commands on terminal target",
+                              "display_name": "Execute Terminal Command(s)",
+                              "merge_commands": false,
+                              "runtime_user": {
+                                "target_default": true
+                              },
+                              "skip_execution": false,
+                              "target": {
+                                "use_workflow_target": true
+                              }
+                            },
+                            "object_type": "definition_activity"
+                          }
+                        ]
+                      },
+                      {
+                        "unique_name": "definition_activity_02P2YCRZGWF723RgSxLo3Qd3oqQyWRAleXY",
+                        "name": "Condition Branch",
+                        "title": "No",
+                        "type": "logic.condition_block",
+                        "base_type": "activity",
+                        "properties": {
+                          "condition": {
+                            "left_operand": "$activity.definition_activity_02P2YBXAYRTFC7MeytwE5KaXa3mroQ53XJL.output.script_queries.checksum$",
+                            "operator": "ne",
+                            "right_operand": "$workflow.definition_workflow_02P2W9QM5HKX310sEkbhcXLfXwqjWjKDu2J.input.variable_workflow_02SXTDEDAGRWA17mfIp7arrWBZcF29aa1vz$"
+                          },
+                          "continue_on_failure": false,
+                          "display_name": "No",
+                          "skip_execution": false
+                        },
+                        "object_type": "definition_activity",
+                        "actions": [
+                          {
+                            "unique_name": "definition_activity_02SYRKVGCI9JY4eakTYkJ9W0f3XCtUjhbpp",
+                            "name": "Execute Terminal Command(s)",
+                            "title": "Wrong Checksum",
+                            "type": "terminal.command",
+                            "base_type": "activity",
+                            "properties": {
+                              "action_timeout": 180,
+                              "command_timeout": 60,
+                              "commands": "send log 6 \"EEM-UPGRADE: Checksum Incorrect\"",
+                              "continue_on_failure": false,
+                              "description": "Executes commands on terminal target",
+                              "display_name": "Wrong Checksum",
+                              "merge_commands": false,
+                              "runtime_user": {
+                                "target_default": true
+                              },
+                              "skip_execution": false,
+                              "target": {
+                                "use_workflow_target": true
+                              }
+                            },
+                            "object_type": "definition_activity"
+                          },
+                          {
+                            "unique_name": "definition_activity_02P2YF57MAT174Rz1xHyy2B5WdVcLYvSYw6",
+                            "name": "Execute Python Script",
+                            "title": "reduce iteration count",
+                            "type": "python3.script",
+                            "base_type": "activity",
+                            "properties": {
+                              "action_timeout": 180,
+                              "continue_on_failure": false,
+                              "description": "Execute Python Script",
+                              "display_name": "reduce iteration count",
+                              "script": "iteration = $workflow.definition_workflow_02P2W9QM5HKX310sEkbhcXLfXwqjWjKDu2J.local.variable_workflow_02P2Y9UVNS3BA4LdeDnqgfJSj9isavc4xxP$\n\nnew_iteration = iteration -1\n",
+                              "script_queries": [
+                                {
+                                  "script_query": "new_iteration",
+                                  "script_query_name": "new_iteration",
+                                  "script_query_type": "integer"
+                                }
+                              ],
+                              "skip_execution": false
+                            },
+                            "object_type": "definition_activity"
+                          },
+                          {
+                            "unique_name": "definition_activity_02P2YG4Y5B7IR44GpYdJUWMiCa34Nz4o2kV",
+                            "name": "Set Variables",
+                            "title": "Set Variables",
+                            "type": "core.set_multiple_variables",
+                            "base_type": "activity",
+                            "properties": {
+                              "continue_on_failure": false,
+                              "description": "Set Variables",
+                              "display_name": "Set Variables",
+                              "skip_execution": false,
+                              "variables_to_update": [
+                                {
+                                  "variable_to_update": "$workflow.definition_workflow_02P2W9QM5HKX310sEkbhcXLfXwqjWjKDu2J.local.variable_workflow_02P2Y9UVNS3BA4LdeDnqgfJSj9isavc4xxP$",
+                                  "variable_value_new": "$activity.definition_activity_02P2YF57MAT174Rz1xHyy2B5WdVcLYvSYw6.output.script_queries.new_iteration$"
+                                }
+                              ]
+                            },
+                            "object_type": "definition_activity"
+                          },
+                          {
+                            "unique_name": "definition_activity_02P2YGZXFY5E52vOgyBpN2YJiBtgXxz0QZi",
+                            "name": "Sleep",
+                            "title": "Sleep",
+                            "type": "core.sleep",
+                            "base_type": "activity",
+                            "properties": {
+                              "continue_on_failure": false,
+                              "description": "Sleep",
+                              "display_name": "Sleep",
+                              "skip_execution": false,
+                              "sleep_interval": 60
+                            },
+                            "object_type": "definition_activity"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "categories": [
+          "category_1BMfMXSnJMyt5Ihqi7rWJr5N8cf"
+        ]
+      }
+    }
+  ],
+  "remotemetas": {
+    "remote_meta_02QRCDUO490GT54DMFvpHjpjv5WuGFNYvBe": {
+      "base_type": "remote_meta",
+      "type": "generic.remote_meta",
+      "name": "Home-Lab",
+      "title": "Home-Lab",
+      "version": "1.0.0",
+      "properties": {
+        "advanced": {
+          "remote_cluster_subnet": "10.42.0.0/16",
+          "remote_service_subnet": "10.43.0.0/16",
+          "require_advanced": true
+        },
+        "cloud_type": "vmware",
+        "display_name": "Home-Lab",
+        "network": {
+          "is_dhcp": true
+        },
+        "proxy": {
+          "require_proxy": false
+        }
+      },
+      "unique_name": "remote_meta_02QRCDUO490GT54DMFvpHjpjv5WuGFNYvBe",
+      "object_type": "remote_meta"
+    }
+  },
+  "dependent_workflows": [
+    "definition_workflow_02P2TQOB7DX6K3gAgOuYpTjybvDO9rat6So",
+    "definition_workflow_02P2W9QM5HKX310sEkbhcXLfXwqjWjKDu2J"
+  ]
+}
