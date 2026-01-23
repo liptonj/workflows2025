@@ -10,7 +10,7 @@
         "schema_id": "datatype.boolean",
         "properties": {
           "value": false,
-          "scope": "local",
+          "scope": "output",
           "name": "Next Step",
           "type": "datatype.boolean",
           "is_required": false,
@@ -55,7 +55,7 @@
     "object_type": "definition_workflow",
     "actions": [
       {
-        "unique_name": "definition_activity_02P2TQZLY4UGH2FPDpQFQKWEl7vhwS3YCZQ",
+        "unique_name": "definition_activity_02SYPDQ4Z5ZYL4v7ZhwYByNdc6RoaY1PTvL",
         "name": "Execute Terminal Command(s)",
         "title": "Get Version",
         "type": "terminal.command",
@@ -63,7 +63,7 @@
         "properties": {
           "action_timeout": 180,
           "command_timeout": 6,
-          "commands": "term len 0\nsh ver",
+          "commands": "term len 0\nsh ver\nsend log 6 \"PRE-FLIGHT: SHOW VERSION COMPLETE\"",
           "continue_on_failure": false,
           "description": "Executes commands on terminal target",
           "display_name": "Get Version",
@@ -96,7 +96,7 @@
           "continue_on_failure": false,
           "description": "Execute Python Script",
           "display_name": "Pull Details",
-          "script": "import re\n\noutput = '''$activity.definition_activity_02P2TQZLY4UGH2FPDpQFQKWEl7vhwS3YCZQ.output.response_body$'''\n\n\ndef _first_match(patterns, text, flags=0):\n    for pattern in patterns:\n        match = re.search(pattern, text, flags)\n        if match:\n            return match.group(1).strip()\n    return \"\"\n\n\nversion = _first_match(\n    [\n        r\"Cisco IOS XE Software, Version\\s+([^\\n]+)\",\n        r\"Cisco IOS Software,\\s+Version\\s+([^\\s,]+)\",\n        r\"IOS\\s+\\([^\\)]+\\)\\s+Software,\\s+Version\\s+([^\\s,]+)\",\n        r\"Version\\s+([^\\s,]+)\",\n    ],\n    output,\n)\n\nmodel = _first_match(\n    [\n        r\"^cisco\\s+([^\\s]+)\\s*\\(\",\n        r\"Model Number\\s*:\\s*([^\\n]+)\",\n        r\"[Pp]latform\\s*:\\s*([^\\n]+)\",\n        r\"[Hh]ardware\\s*:\\s*([^,\\n]+)\",\n    ],\n    output,\n    flags=re.MULTILINE,\n)\n\nserial = _first_match(\n    [\n        r\"System Serial Number\\s*:\\s*([^\\n]+)\",\n        r\"Processor board ID\\s+([^\\n]+)\",\n        r\"[Ss]erial [Nn]umber\\s*:\\s*([^\\n]+)\",\n    ],\n    output,\n)",
+          "script": "import re\n\noutput = '''$activity.definition_activity_02SYPDQ4Z5ZYL4v7ZhwYByNdc6RoaY1PTvL.output.response_body$'''\n\n\ndef _first_match(patterns, text, flags=0):\n    for pattern in patterns:\n        match = re.search(pattern, text, flags)\n        if match:\n            return match.group(1).strip()\n    return \"\"\n\n\nversion = _first_match(\n    [\n        r\"Cisco IOS XE Software, Version\\s+([^\\n]+)\",\n        r\"Cisco IOS Software,\\s+Version\\s+([^\\s,]+)\",\n        r\"IOS\\s+\\([^\\)]+\\)\\s+Software,\\s+Version\\s+([^\\s,]+)\",\n        r\"Version\\s+([^\\s,]+)\",\n    ],\n    output,\n)\n\nmodel = _first_match(\n    [\n        r\"^cisco\\s+([^\\s]+)\\s*\\(\",\n        r\"Model Number\\s*:\\s*([^\\n]+)\",\n        r\"[Pp]latform\\s*:\\s*([^\\n]+)\",\n        r\"[Hh]ardware\\s*:\\s*([^,\\n]+)\",\n    ],\n    output,\n    flags=re.MULTILINE,\n)\n\nserial = _first_match(\n    [\n        r\"System Serial Number\\s*:\\s*([^\\n]+)\",\n        r\"Processor board ID\\s+([^\\n]+)\",\n        r\"[Ss]erial [Nn]umber\\s*:\\s*([^\\n]+)\",\n    ],\n    output,\n)",
           "script_queries": [
             {
               "script_query": "version",
@@ -127,7 +127,7 @@
         "properties": {
           "action_timeout": 180,
           "command_timeout": 60,
-          "commands": "term len 0\ndir flash:\ndir flash | inc .bin",
+          "commands": "term len 0\ndir flash:\ndir flash | inc .bin\nsend log 6 \"PRE-FLIGHT: CHECK SPACE COMPLETE\"",
           "continue_on_failure": false,
           "description": "Executes commands on terminal target",
           "display_name": "Check flash space",
@@ -236,7 +236,7 @@
                   "skip_execution": false,
                   "variables_to_update": [
                     {
-                      "variable_to_update": "$workflow.definition_workflow_02P2TQOB7DX6K3gAgOuYpTjybvDO9rat6So.local.variable_workflow_02SXTYY8AQAGT2NbeV2eGxFHZ1QU1qdOgfK$",
+                      "variable_to_update": "$workflow.definition_workflow_02P2TQOB7DX6K3gAgOuYpTjybvDO9rat6So.output.variable_workflow_02SXTYY8AQAGT2NbeV2eGxFHZ1QU1qdOgfK$",
                       "variable_value_new": true
                     },
                     {
@@ -244,6 +244,31 @@
                       "variable_value_new": "true"
                     }
                   ]
+                },
+                "object_type": "definition_activity"
+              },
+              {
+                "unique_name": "definition_activity_02SYQM9YYKBQX4fwiZReiVkIC2ho4aIcFi7",
+                "name": "Execute Terminal Command(s)",
+                "title": "SEND LOG PREFLIGHT PASSED",
+                "type": "terminal.command",
+                "base_type": "activity",
+                "properties": {
+                  "action_timeout": 180,
+                  "command_timeout": 60,
+                  "commands": "term len 0\nsend log 6 \"PRE-FLIGHT: Enough Free Space Starting Upgrade\"",
+                  "continue_on_failure": false,
+                  "description": "Executes commands on terminal target",
+                  "display_name": "SEND LOG PREFLIGHT PASSED",
+                  "merge_commands": false,
+                  "runtime_user": {
+                    "target_default": true
+                  },
+                  "skip_execution": false,
+                  "target": {
+                    "use_workflow_target": true
+                  },
+                  "user_responses": []
                 },
                 "object_type": "definition_activity"
               }
@@ -284,6 +309,31 @@
                       "variable_value_new": "$activity.definition_activity_02P2UKEYQS5KE5dbRsEHZSFN3nfLjyQVI6Y.output.response_body$"
                     }
                   ]
+                },
+                "object_type": "definition_activity"
+              },
+              {
+                "unique_name": "definition_activity_02SYQN4VON0276pmikYBGq3q5LDL0yDu6yy",
+                "name": "Execute Terminal Command(s)",
+                "title": "SEND LOG PREFLIGHT FAILED",
+                "type": "terminal.command",
+                "base_type": "activity",
+                "properties": {
+                  "action_timeout": 180,
+                  "command_timeout": 60,
+                  "commands": "term len 0\nsend log 6 \"PRE-FLIGHT: Not Enough Free Space Upgrade Halted\"",
+                  "continue_on_failure": false,
+                  "description": "Executes commands on terminal target",
+                  "display_name": "SEND LOG PREFLIGHT FAILED",
+                  "merge_commands": false,
+                  "runtime_user": {
+                    "target_default": true
+                  },
+                  "skip_execution": false,
+                  "target": {
+                    "use_workflow_target": true
+                  },
+                  "user_responses": []
                 },
                 "object_type": "definition_activity"
               }
