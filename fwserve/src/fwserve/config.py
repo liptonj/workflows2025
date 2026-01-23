@@ -28,6 +28,9 @@ SYSLOG_LOG_FILE: Path = Path(
 SYSLOG_TAIL_SIZE: int = int(os.getenv("SYSLOG_TAIL_SIZE", "5000"))
 SYSLOG_HISTORY_LIMIT: int = int(os.getenv("SYSLOG_HISTORY_LIMIT", "500"))
 
+# Syslog filtering configuration
+SYSLOG_FILTER_NOISE: bool = os.getenv("SYSLOG_FILTER_NOISE", "true").lower() == "true"
+
 # Timezone configuration
 TIMEZONE: ZoneInfo = ZoneInfo(os.getenv("FWSERVE_TIMEZONE", "America/New_York"))
 

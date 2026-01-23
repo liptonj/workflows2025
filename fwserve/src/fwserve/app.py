@@ -150,8 +150,14 @@ async def _handle_syslog_message(payload: dict[str, object]) -> None:
     if not syslog_store:
         return
 
-    parsed = parse_syslog_message({"raw": payload.get("raw", "")})
-    parsed["source"] = payload.get("source")
+    parsed = parse_syslog_message({
+        "raw": payload.get("raw", ""),
+        "source": payload.get("source", "unknown"),
+    })
+    
+    # Skip filtered messages
+    if parsed is None:
+        return
 
     result = await append_syslog_entry({"store": syslog_store, "entry": parsed})
     if not result.get("is_success"):
