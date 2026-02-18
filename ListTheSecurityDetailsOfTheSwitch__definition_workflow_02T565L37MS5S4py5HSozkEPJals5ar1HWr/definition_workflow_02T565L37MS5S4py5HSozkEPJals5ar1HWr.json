@@ -1,8 +1,8 @@
 {
   "workflow": {
     "unique_name": "definition_workflow_02T565L37MS5S4py5HSozkEPJals5ar1HWr",
-    "name": "list the security details of the switch",
-    "title": "list the security details of the switch",
+    "name": "The demo to grab the port details of a switch",
+    "title": "The demo to grab the port details of a switch",
     "type": "generic.workflow",
     "base_type": "workflow",
     "variables": [
@@ -42,7 +42,8 @@
         "is_atomic": false
       },
       "delete_workflow_instance": false,
-      "display_name": "list the security details of the switch",
+      "description": "The demo to grab the port details of a switch",
+      "display_name": "The demo to grab the port details of a switch",
       "runtime_user": {
         "target_default": true
       },
